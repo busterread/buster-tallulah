@@ -140,12 +140,13 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .song-modal-overlay.open{opacity:1;pointer-events:auto}
 .song-modal{position:relative;width:100%;max-width:440px;max-height:86vh;overflow-y:auto;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease}
 .song-modal-overlay.open .song-modal{transform:translateY(0) scale(1)}
+.song-modal-art{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--wine)}
 .song-modal-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:contrast(1.05) brightness(.9)}
-.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,.5) 0%,rgba(20,5,8,.72) 45%,var(--wine) 92%)}
-.song-modal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(232,201,122,.32);pointer-events:none;z-index:2}
-.song-modal-close{position:absolute;top:14px;right:14px;z-index:4;width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.4);color:var(--gold-soft);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,0) 55%,rgba(20,5,8,.6) 85%,var(--wine) 100%)}
+.song-modal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(232,201,122,.32);pointer-events:none;z-index:5}
+.song-modal-close{position:absolute;top:14px;right:14px;z-index:6;width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.4);color:var(--gold-soft);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .song-modal-close:hover{background:rgba(26,20,16,.7)}
-.song-modal-content{position:relative;z-index:3;padding:48px 38px 38px;color:var(--cream);text-align:center}
+.song-modal-content{position:relative;padding:32px 38px 38px;color:var(--cream);text-align:center}
 .song-modal-eyebrow{font-style:italic;font-size:11px;letter-spacing:.36em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);margin-bottom:14px}
 .song-modal-title{font-weight:700;font-style:italic;font-size:clamp(26px,4.4vw,34px);color:var(--cream);margin-bottom:26px}
 .song-modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;text-align:left}
@@ -605,9 +606,11 @@ section[id]{scroll-margin-top:64px}
 <!-- SONG INFO MODAL -->
 <div class="song-modal-overlay" id="songModalOverlay">
   <div class="song-modal" id="songModal" role="dialog" aria-modal="true" aria-labelledby="songModalTitle">
-    <div class="song-modal-bg" id="songModalBg"></div>
-    <div class="song-modal-grade"></div>
     <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="song-modal-art">
+      <div class="song-modal-bg" id="songModalBg"></div>
+      <div class="song-modal-grade"></div>
+    </div>
     <div class="song-modal-content">
       <div class="song-modal-eyebrow">Track Details</div>
       <h3 class="song-modal-title" id="songModalTitle"></h3>

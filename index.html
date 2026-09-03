@@ -113,7 +113,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 /* Vinyl shelf - left */
 .vinyl-shelf{display:flex;flex-direction:column;gap:24px}
 .vinyl-card{
-  position:relative;width:150px;height:150px;border-radius:50%;cursor:grab;
+  position:relative;width:150px;height:150px;cursor:grab;
   user-select:none;flex-shrink:0;
   transition:transform .2s,box-shadow .2s;
 }
@@ -121,7 +121,13 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .vinyl-card.dragging{opacity:0.3;transform:scale(0.9)}
 .vinyl-card.used{opacity:0.2;pointer-events:none}
 .vinyl-card.coming-soon{opacity:0.3;pointer-events:none;cursor:default}
-.vinyl-card svg{width:100%;height:100%;display:block;border-radius:50%}
+
+.vinyl-sleeve{
+  position:absolute;inset:0;background:linear-gradient(155deg,#2a1015,#0a0606 75%) center/cover no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(232,201,122,.22),0 10px 24px rgba(0,0,0,.5);
+}
+.vinyl-disc{position:absolute;left:16%;top:16%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
+.vinyl-disc svg{width:100%;height:100%;display:block;border-radius:50%}
 
 .vinyl-info{
   position:absolute;top:-3px;right:-3px;z-index:5;
@@ -138,15 +144,15 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 /* ===== SONG MODAL ===== */
 .song-modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(10,4,7,.84);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .35s ease}
 .song-modal-overlay.open{opacity:1;pointer-events:auto}
-.song-modal{position:relative;width:100%;max-width:440px;max-height:86vh;overflow-y:auto;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease}
+.song-modal{position:relative;width:min(520px,86vw,86vh);aspect-ratio:1/1;overflow:hidden;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease}
 .song-modal-overlay.open .song-modal{transform:translateY(0) scale(1)}
-.song-modal-art{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--wine)}
 .song-modal-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:contrast(1.05) brightness(.9)}
-.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,0) 55%,rgba(20,5,8,.6) 85%,var(--wine) 100%)}
+.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,.08) 0%,rgba(20,5,8,.42) 38%,rgba(20,5,8,.82) 64%,var(--wine) 92%)}
 .song-modal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(232,201,122,.32);pointer-events:none;z-index:5}
 .song-modal-close{position:absolute;top:14px;right:14px;z-index:6;width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.4);color:var(--gold-soft);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .song-modal-close:hover{background:rgba(26,20,16,.7)}
-.song-modal-content{position:relative;padding:32px 38px 38px;color:var(--cream);text-align:center}
+.song-modal-content{position:absolute;inset:0;z-index:3;overflow-y:auto;padding:36px 34px 30px;color:var(--cream);text-align:center}
+.song-modal-inner{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end}
 .song-modal-eyebrow{font-style:italic;font-size:11px;letter-spacing:.36em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);margin-bottom:14px}
 .song-modal-title{font-weight:700;font-style:italic;font-size:clamp(26px,4.4vw,34px);color:var(--cream);margin-bottom:26px}
 .song-modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;text-align:left}
@@ -457,85 +463,94 @@ section[id]{scroll-margin-top:64px}
         <!-- Song 1 -->
         <div class="vinyl-card" id="vinyl-0" draggable="true" data-song="0">
           <button class="vinyl-info" type="button" data-song="0" aria-haspopup="dialog" aria-label="Little Lady track info"><span aria-hidden="true">i</span></button>
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg0" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg0)"/>
-            <!-- Grooves -->
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <!-- Label -->
-            <circle cx="100" cy="100" r="34" fill="#8B2F3E"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="93" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Little</text>
-            <text x="100" y="104" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Lady</text>
-            <text x="100" y="116" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <!-- Shine -->
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <div class="vinyl-sleeve" style="background-image:url('assets/little-lady-coverart.jpeg')"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg0" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg0)"/>
+              <!-- Grooves -->
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <!-- Label -->
+              <circle cx="100" cy="100" r="34" fill="#8B2F3E"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="93" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Little</text>
+              <text x="100" y="104" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Lady</text>
+              <text x="100" y="116" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <!-- Shine -->
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
 
         <!-- Song 2 -->
         <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
           <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg1" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg1)"/>
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="34" fill="#6B1D2A"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
-            <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
-            <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <div class="vinyl-sleeve"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg1)"/>
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="34" fill="#6B1D2A"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
+              <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
+              <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
 
         <!-- Song 3 -->
         <div class="vinyl-card coming-soon" id="vinyl-2" draggable="false" data-song="2">
           <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="My Devotion track info"><span aria-hidden="true">i</span></button>
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg2" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg2)"/>
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="34" fill="#4a1019"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
-            <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
-            <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <div class="vinyl-sleeve"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg2)"/>
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="34" fill="#4a1019"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
+              <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
+              <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -606,16 +621,16 @@ section[id]{scroll-margin-top:64px}
 <!-- SONG INFO MODAL -->
 <div class="song-modal-overlay" id="songModalOverlay">
   <div class="song-modal" id="songModal" role="dialog" aria-modal="true" aria-labelledby="songModalTitle">
+    <div class="song-modal-bg" id="songModalBg"></div>
+    <div class="song-modal-grade"></div>
     <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
-    <div class="song-modal-art">
-      <div class="song-modal-bg" id="songModalBg"></div>
-      <div class="song-modal-grade"></div>
-    </div>
     <div class="song-modal-content">
-      <div class="song-modal-eyebrow">Track Details</div>
-      <h3 class="song-modal-title" id="songModalTitle"></h3>
-      <div class="song-modal-fields" id="songModalFields"></div>
-      <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+      <div class="song-modal-inner">
+        <div class="song-modal-eyebrow">Track Details</div>
+        <h3 class="song-modal-title" id="songModalTitle"></h3>
+        <div class="song-modal-fields" id="songModalFields"></div>
+        <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+      </div>
     </div>
   </div>
 </div>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buster &amp; Tallulah</title>
-<meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet. Recorded at Yellow Door Studios, produced by Sam Grade.">
+<meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet.">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -113,7 +113,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 /* Vinyl shelf - left */
 .vinyl-shelf{display:flex;flex-direction:column;gap:24px}
 .vinyl-card{
-  position:relative;width:150px;height:150px;border-radius:50%;cursor:grab;
+  position:relative;width:150px;height:150px;cursor:grab;
   user-select:none;flex-shrink:0;
   transition:transform .2s,box-shadow .2s;
 }
@@ -121,7 +121,49 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .vinyl-card.dragging{opacity:0.3;transform:scale(0.9)}
 .vinyl-card.used{opacity:0.2;pointer-events:none}
 .vinyl-card.coming-soon{opacity:0.3;pointer-events:none;cursor:default}
-.vinyl-card svg{width:100%;height:100%;display:block;border-radius:50%}
+
+.vinyl-sleeve{
+  position:absolute;inset:0;background:linear-gradient(155deg,#2a1015,#0a0606 75%) center/cover no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(232,201,122,.22),0 10px 24px rgba(0,0,0,.5);
+}
+.vinyl-disc{position:absolute;left:16%;top:16%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
+.vinyl-disc svg{width:100%;height:100%;display:block;border-radius:50%}
+
+.vinyl-info{
+  position:absolute;top:-3px;right:-3px;z-index:5;
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(26,20,16,.85);border:1px solid rgba(232,201,122,.6);
+  color:var(--gold-soft);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+  cursor:pointer;pointer-events:auto;padding:0;
+  transition:background .2s,transform .2s,border-color .2s;
+}
+.vinyl-info:hover,.vinyl-info:focus-visible{background:var(--wine);border-color:var(--gold-soft);transform:scale(1.1)}
+.vinyl-card.coming-soon .vinyl-info{opacity:.9}
+
+/* ===== SONG MODAL ===== */
+.song-modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(10,4,7,.84);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.song-modal-overlay.open{opacity:1;pointer-events:auto}
+.song-modal{position:relative;width:min(520px,86vw,86vh);aspect-ratio:1/1;overflow:hidden;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease}
+.song-modal-overlay.open .song-modal{transform:translateY(0) scale(1)}
+.song-modal-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:contrast(1.05) brightness(.9)}
+.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,.08) 0%,rgba(20,5,8,.42) 38%,rgba(20,5,8,.82) 64%,var(--wine) 92%)}
+.song-modal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(232,201,122,.32);pointer-events:none;z-index:5}
+.song-modal-close{position:absolute;top:14px;right:14px;z-index:6;width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.4);color:var(--gold-soft);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.song-modal-close:hover{background:rgba(26,20,16,.7)}
+.song-modal-content{position:absolute;inset:0;z-index:3;overflow-y:auto;padding:36px 34px 30px;color:var(--cream);text-align:center}
+.song-modal-inner{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.song-modal-eyebrow{font-style:italic;font-size:11px;letter-spacing:.36em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);margin-bottom:14px}
+.song-modal-title{font-weight:700;font-style:italic;font-size:clamp(26px,4.4vw,34px);color:var(--cream);margin-bottom:26px}
+.song-modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;text-align:left}
+.song-modal-field{border-bottom:1px solid rgba(232,201,122,.18);padding-bottom:12px}
+.song-modal-field strong{display:block;font-style:italic;font-weight:700;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:4px}
+.song-modal-field span{font-style:italic;font-size:15px;color:var(--cream)}
+.song-modal-field.tbc span{color:rgba(245,237,224,.42)}
+.song-modal-presave{display:inline-block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--cream);background:transparent;padding:13px 28px;text-decoration:none;border:1px solid var(--gold);transition:background .25s,color .25s}
+.song-modal-presave:hover{background:var(--gold);color:var(--ink)}
+.song-modal-presave.disabled{opacity:.4;pointer-events:none;border-color:rgba(232,201,122,.3);color:rgba(245,237,224,.5)}
+body.modal-open{overflow:hidden}
 
 /* Turntable platter */
 .tt-platter-wrap{display:flex;flex-direction:column;align-items:center;gap:0}
@@ -226,10 +268,23 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .shows{background:var(--paper);padding:100px 0 100px;position:relative}
 .shows-inner{max-width:760px;margin:0 auto;padding:0 40px}
 .gig-grid{margin-top:36px}
-.gig{display:flex;justify-content:space-between;align-items:baseline;padding:24px 0;border-bottom:1px solid rgba(26,20,16,.11)}
+.gig{border-bottom:1px solid rgba(26,20,16,.11)}
 .gig:first-child{border-top:1px solid rgba(26,20,16,.11)}
+.gig.upcoming{display:flex;justify-content:space-between;align-items:baseline;padding:24px 0}
+.gig-head{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:20px;padding:24px 0;background:none;border:none;font:inherit;text-align:left;cursor:pointer;color:inherit}
+.gig-left{display:inline-flex;align-items:baseline;gap:12px}
 .gig-venue{font-weight:700;font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--ink)}
+.gig-status{font-style:italic;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--wine);opacity:.7}
+.gig-right{display:inline-flex;align-items:center;gap:16px}
 .gig-detail{font-style:italic;font-size:13px;color:rgba(26,20,16,.45);letter-spacing:.06em}
+.gig-chevron{width:8px;height:8px;flex:0 0 auto;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg);transition:transform .35s ease}
+.gig-head[aria-expanded="true"] .gig-chevron{transform:rotate(-135deg)}
+.gig-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.gig-panel-inner{overflow:hidden}
+.gig-head[aria-expanded="true"]+.gig-panel{grid-template-rows:1fr}
+.gig-panel-inner>*{display:block;padding-bottom:22px}
+.gig-lineup{font-style:italic;font-size:14px;color:var(--ink-soft);letter-spacing:.02em}
+.gig-date{font-style:italic;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-top:6px}
 .gig.upcoming .gig-venue{color:rgba(26,20,16,.35)}
 .gig.upcoming .gig-detail{font-style:italic;color:rgba(26,20,16,.28)}
 
@@ -249,7 +304,10 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .matchbook .contact{font-size:14px;letter-spacing:.04em;color:var(--cream);margin-bottom:8px}
 .matchbook .contact strong{font-style:italic;font-weight:700;color:var(--gold-soft);font-size:15px;margin-right:8px}
 .matchbook .contact a{color:var(--cream);text-decoration:none;border-bottom:1px dotted rgba(245,237,224,.42)}
-.matchbook .ig{margin-top:20px;font-style:italic;font-size:17px;color:var(--gold-soft);letter-spacing:.04em}
+.matchbook .socials{margin-top:20px;font-style:italic;font-size:17px;color:var(--gold-soft);letter-spacing:.04em}
+.matchbook .socials a{color:var(--gold-soft);text-decoration:none;border-bottom:1px dotted rgba(232,201,122,.5)}
+.matchbook .socials a:hover{border-bottom-style:solid}
+.matchbook .social-div{margin:0 10px;opacity:.55;font-style:normal}
 .footer-credit{position:relative;z-index:2;text-align:center;margin-top:40px;font-style:italic;font-size:11px;color:rgba(232,201,122,.48);letter-spacing:.16em}
 .footer-credit::before{content:'';display:block;width:34px;height:1px;background:rgba(232,201,122,.38);margin:0 auto 12px}
 
@@ -303,7 +361,9 @@ section[id]{scroll-margin-top:64px}
   .tt-guide-div{height:24px}
   .shows{padding:70px 0 70px}
   .shows-inner{padding:0 22px}
-  .gig{flex-direction:column;align-items:flex-start;gap:6px;padding:20px 0}
+  .gig.upcoming{flex-direction:column;align-items:flex-start;gap:6px;padding:20px 0}
+  .gig-head{flex-direction:column;align-items:flex-start;gap:8px;padding:20px 0}
+  .gig-right{align-self:stretch;justify-content:space-between}
   .gig-venue{font-size:20px}
   .book{padding:70px 18px 60px}
 }
@@ -315,6 +375,8 @@ section[id]{scroll-margin-top:64px}
   .brand .amp{font-size:18px}
   .vinyl-card{width:94px;height:94px}
   .vinyl-shelf{gap:10px}
+  .vinyl-info{width:20px;height:20px;font-size:11px}
+  .song-modal-content{padding:40px 26px 30px}
   .tt-guide{flex-wrap:wrap;gap:10px 0}
   .tt-guide-div{display:none}
   .tt-guide-step{padding:0 10px;min-width:88px}
@@ -364,8 +426,6 @@ section[id]{scroll-margin-top:64px}
       <span class="line"></span><span class="diamond"></span><span class="line"></span>
     </div>
     <div class="hero-meta">
-      <div class="item"><strong>Recorded at</strong>Yellow Door Studios</div>
-      <div class="item"><strong>Produced by</strong>Sam Grade</div>
       <div class="item"><strong>Out</strong>2026</div>
     </div>
   </div>
@@ -387,7 +447,7 @@ section[id]{scroll-margin-top:64px}
       <div class="grade"></div>
       <div class="profile-info">
         <div class="profile-name">Tallulah</div>
-        <div class="profile-role">Vocals</div>
+        <div class="profile-role">Vocals &middot; Writes the Songs</div>
       </div>
     </div>
   </div>
@@ -402,83 +462,95 @@ section[id]{scroll-margin-top:64px}
       <div class="vinyl-shelf" id="vinylShelf">
         <!-- Song 1 -->
         <div class="vinyl-card" id="vinyl-0" draggable="true" data-song="0">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg0" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg0)"/>
-            <!-- Grooves -->
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <!-- Label -->
-            <circle cx="100" cy="100" r="34" fill="#8B2F3E"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="93" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Little</text>
-            <text x="100" y="104" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Lady</text>
-            <text x="100" y="116" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <!-- Shine -->
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <button class="vinyl-info" type="button" data-song="0" aria-haspopup="dialog" aria-label="Little Lady track info"><span aria-hidden="true">i</span></button>
+          <div class="vinyl-sleeve" style="background-image:url('assets/little-lady-coverart.jpeg')"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg0" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg0)"/>
+              <!-- Grooves -->
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <!-- Label -->
+              <circle cx="100" cy="100" r="34" fill="#8B2F3E"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="93" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Little</text>
+              <text x="100" y="104" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Lady</text>
+              <text x="100" y="116" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <!-- Shine -->
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
 
         <!-- Song 2 -->
         <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg1" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg1)"/>
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="34" fill="#6B1D2A"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
-            <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
-            <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
+          <div class="vinyl-sleeve"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg1)"/>
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="34" fill="#6B1D2A"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
+              <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
+              <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
 
         <!-- Song 3 -->
         <div class="vinyl-card coming-soon" id="vinyl-2" draggable="false" data-song="2">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="vg2" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#161010"/>
-                <stop offset="45%" stop-color="#0a0606"/>
-                <stop offset="100%" stop-color="#050202"/>
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="100" fill="url(#vg2)"/>
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
-            <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
-            <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
-            <circle cx="100" cy="100" r="34" fill="#4a1019"/>
-            <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-            <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
-            <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
-            <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
-            <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
-          </svg>
+          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="My Devotion track info"><span aria-hidden="true">i</span></button>
+          <div class="vinyl-sleeve"></div>
+          <div class="vinyl-disc">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vg2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#161010"/>
+                  <stop offset="45%" stop-color="#0a0606"/>
+                  <stop offset="100%" stop-color="#050202"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vg2)"/>
+              <circle cx="100" cy="100" r="95" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".8"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#181212" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="75" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".7"/>
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#181212" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="55" fill="none" stroke="#1c1414" stroke-width="0.5" opacity=".6"/>
+              <circle cx="100" cy="100" r="34" fill="#4a1019"/>
+              <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="5" fill="#1A1410"/>
+              <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
+              <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
+              <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -546,18 +618,81 @@ section[id]{scroll-margin-top:64px}
   </div>
 </section>
 
+<!-- SONG INFO MODAL -->
+<div class="song-modal-overlay" id="songModalOverlay">
+  <div class="song-modal" id="songModal" role="dialog" aria-modal="true" aria-labelledby="songModalTitle">
+    <div class="song-modal-bg" id="songModalBg"></div>
+    <div class="song-modal-grade"></div>
+    <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="song-modal-content">
+      <div class="song-modal-inner">
+        <div class="song-modal-eyebrow">Track Details</div>
+        <h3 class="song-modal-title" id="songModalTitle"></h3>
+        <div class="song-modal-fields" id="songModalFields"></div>
+        <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SHOWS -->
 <section class="shows" id="live">
   <div class="shows-inner reveal">
     <div class="section-label">Live</div>
     <div class="gig-grid">
       <div class="gig">
-        <span class="gig-venue">The Troubadour</span>
-        <span class="gig-detail">Old Brompton Road &middot; London &middot; 2025</span>
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-0">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Opener &middot; 2025</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-0">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Buster &amp; Tallulah, Carlton, Ted Tarling</span>
+            <span class="gig-date">28.08.2025</span>
+          </div>
+        </div>
       </div>
       <div class="gig">
-        <span class="gig-venue">The Troubadour</span>
-        <span class="gig-detail">Old Brompton Road &middot; London &middot; 2025</span>
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-1">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Support &middot; 2025</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-1">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Ellie Nanni, Buster &amp; Tallulah, Carlton</span>
+            <span class="gig-date">18.12.2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="gig">
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-2">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Headliner &middot; 2026</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-2">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Carlton, Slowlight, Buster &amp; Tallulah</span>
+            <span class="gig-date">24.07.2026</span>
+          </div>
+        </div>
       </div>
       <div class="gig upcoming">
         <span class="gig-venue">Upcoming</span>
@@ -574,12 +709,15 @@ section[id]{scroll-margin-top:64px}
     <div class="pre">Book them.</div>
     <h3>Buster<span class="amp"> &amp; </span>Tallulah</h3>
     <div class="where">Shows. Sessions. Press.</div>
-    <div class="contact"><strong>Bookings</strong><a href="mailto:hello@busterandtallulah.com">hello@busterandtallulah.com</a></div>
-    <div class="contact"><strong>Press</strong><a href="mailto:press@busterandtallulah.com">press@busterandtallulah.com</a></div>
-    <div class="ig">@busterandtallulah</div>
+    <div class="contact"><strong>Contact</strong><a href="mailto:tillyandbustermusic@gmail.com">tillyandbustermusic@gmail.com</a></div>
+    <div class="socials">
+      <a href="https://www.instagram.com/busterandtallulah" target="_blank" rel="noopener">Instagram</a>
+      <span class="social-div">&middot;</span>
+      <a href="https://www.tiktok.com/@busterandtallulah" target="_blank" rel="noopener">TikTok</a>
+    </div>
     <div class="strike"></div>
   </div>
-  <div class="footer-credit">Recorded at Yellow Door. Produced by Sam Grade. &copy; 2026 Buster &amp; Tallulah</div>
+  <div class="footer-credit">&copy; 2026 Buster &amp; Tallulah</div>
 </section>
 
 <script>
@@ -680,9 +818,40 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 /* ===== TURNTABLE INTERACTION ===== */
 const songs = [
-  { title: 'Little Lady',   file: 'assets/little-lady.mp3',    label: '#8B2F3E' },
-  { title: 'Carry Me Home', file: 'assets/carry-me-home.mp3',  label: '#6B1D2A' },
-  { title: 'My Devotion',   file: 'assets/my-devotion.mp3',    label: '#4a1019' },
+  {
+    title: 'Little Lady',
+    file: 'assets/little-lady.mp3',
+    label: '#8B2F3E',
+    coverArt: 'assets/little-lady-coverart.jpeg',
+    upcoming: true,
+    releaseDate: 'October 2, 2026', // remove once live
+    producer: 'Sam Grade',
+    studio: 'Yellow Door Studios',
+    mastering: 'AIR Studios',
+    presave: 'https://distrokid.com/hyperfollow/busterandtallulah/little-lady',
+  },
+  {
+    title: 'Carry Me Home',
+    file: 'assets/carry-me-home.mp3',
+    label: '#6B1D2A',
+    upcoming: true,
+    releaseDate: 'TBC',
+    artists: 'TBC',
+    producer: 'TBC',
+    studio: 'TBC',
+    mastering: 'TBC',
+  },
+  {
+    title: 'My Devotion',
+    file: 'assets/my-devotion.mp3',
+    label: '#4a1019',
+    upcoming: true,
+    releaseDate: 'TBC',
+    artists: 'TBC',
+    producer: 'TBC',
+    studio: 'TBC',
+    mastering: 'TBC',
+  },
 ];
 
 let loadedSong   = null;
@@ -695,6 +864,70 @@ const matLabel   = document.getElementById('matLabel');
 const npTrack    = document.getElementById('npTrack');
 const npSub      = document.getElementById('npSub');
 const ttGuide    = document.getElementById('ttGuide');
+
+/* ===== SONG INFO MODAL ===== */
+const songModalOverlay = document.getElementById('songModalOverlay');
+const songModalBg      = document.getElementById('songModalBg');
+const songModalTitle   = document.getElementById('songModalTitle');
+const songModalFields  = document.getElementById('songModalFields');
+const songModalPresave = document.getElementById('songModalPresave');
+const songModalClose   = document.getElementById('songModalClose');
+
+function openSongModal(songIdx) {
+  const s = songs[songIdx];
+
+  songModalTitle.textContent = s.title;
+  songModalBg.style.backgroundImage = s.coverArt ? `url('${s.coverArt}')` : 'none';
+
+  const fields = [];
+  if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
+  if (s.artists)  fields.push(['Other Artists', s.artists]);
+  fields.push(['Producer', s.producer || 'TBC']);
+  fields.push(['Production Studio', s.studio || 'TBC']);
+  fields.push(['Mastering Studio', s.mastering || 'TBC']);
+
+  songModalFields.innerHTML = fields.map(([label, value]) =>
+    `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
+  ).join('');
+
+  if (s.presave) {
+    songModalPresave.href = s.presave;
+    songModalPresave.textContent = 'Pre-Save / Pre-Order';
+    songModalPresave.classList.remove('disabled');
+    songModalPresave.removeAttribute('aria-disabled');
+    songModalPresave.removeAttribute('tabindex');
+  } else {
+    songModalPresave.href = '#';
+    songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
+    songModalPresave.classList.add('disabled');
+    songModalPresave.setAttribute('aria-disabled', 'true');
+    songModalPresave.setAttribute('tabindex', '-1');
+  }
+
+  songModalOverlay.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function closeSongModal() {
+  songModalOverlay.classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+document.querySelectorAll('.vinyl-info').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    e.preventDefault();
+    openSongModal(parseInt(btn.dataset.song, 10));
+  });
+});
+
+songModalClose.addEventListener('click', closeSongModal);
+songModalOverlay.addEventListener('click', e => {
+  if (e.target === songModalOverlay) closeSongModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && songModalOverlay.classList.contains('open')) closeSongModal();
+});
 
 function buildVinylSVG(songIdx) {
   const c = songs[songIdx].label;
@@ -758,6 +991,14 @@ function loadRecord(songIdx) {
   tonearm.classList.remove('on-record');
   clearNowPlaying();
 }
+
+/* ===== SHOWS ACCORDION ===== */
+document.querySelectorAll('.gig-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const expanded = head.getAttribute('aria-expanded') === 'true';
+    head.setAttribute('aria-expanded', String(!expanded));
+  });
+});
 
 /* ===== DRAG & DROP - Vinyl onto platter ===== */
 document.querySelectorAll('.vinyl-card').forEach(card => {

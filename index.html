@@ -100,8 +100,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .profile-role{margin-top:10px;font-style:italic;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);font-weight:700}
 
 /* ===== TURNTABLE SECTION ===== */
-.turntable-section{background:var(--ink);color:var(--cream);padding:100px 32px 120px;position:relative;overflow:hidden}
-.turntable-section::before{content:'';position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=2200&q=80&auto=format&fit=crop');background-size:cover;background-position:center;filter:grayscale(.7) brightness(.25) contrast(1.1);opacity:.4}
+.turntable-section{background:var(--wine);color:var(--cream);padding:100px 32px 120px;position:relative;overflow:hidden}
 .tt-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto}
 .tt-header{text-align:center;margin-bottom:70px}
 .tt-header h2{font-weight:700;font-style:italic;font-size:clamp(32px,4.5vw,58px);line-height:1.0;color:var(--cream)}
@@ -126,7 +125,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
   position:absolute;inset:0;background:linear-gradient(155deg,#2a1015,#0a0606 75%) center/cover no-repeat;
   box-shadow:inset 0 0 0 1px rgba(232,201,122,.22),0 10px 24px rgba(0,0,0,.5);
 }
-.vinyl-disc{position:absolute;left:16%;top:16%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
+.vinyl-disc{position:absolute;left:8%;top:8%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
 .vinyl-disc svg{width:100%;height:100%;display:block;border-radius:50%}
 
 .vinyl-info{
@@ -163,6 +162,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .song-modal-presave{display:inline-block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--cream);background:transparent;padding:13px 28px;text-decoration:none;border:1px solid var(--gold);transition:background .25s,color .25s}
 .song-modal-presave:hover{background:var(--gold);color:var(--ink)}
 .song-modal-presave.disabled{opacity:.4;pointer-events:none;border-color:rgba(232,201,122,.3);color:rgba(245,237,224,.5)}
+.song-modal-soon{display:none;font-weight:700;font-style:italic;font-size:clamp(30px,6vw,46px);color:var(--cream)}
 body.modal-open{overflow:hidden}
 
 /* Turntable platter */
@@ -253,7 +253,7 @@ body.modal-open{overflow:hidden}
 
 /* Now playing */
 .now-playing{
-  margin-top:32px;
+  margin-top:64px;
   text-align:center;
   min-height:60px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
@@ -337,6 +337,7 @@ section[id]{scroll-margin-top:64px}
 
 @media(max-width:560px){
   .hero{height:100svh;min-height:480px}
+  .hero-img{background-size:contain;background-repeat:no-repeat;background-position:center 30%;background-color:#0a0407;transform:none}
   .hero-name{font-size:clamp(40px,13vw,72px)}
   .hero-eyebrow{font-size:11px;letter-spacing:.32em;margin-bottom:22px}
   .hero-eyebrow::before,.hero-eyebrow::after{width:30px}
@@ -354,7 +355,7 @@ section[id]{scroll-margin-top:64px}
   .tt-header{margin-bottom:36px}
   .tt-header h2{font-size:clamp(26px,7vw,40px)}
   .tt-header p{font-size:13px;margin-top:10px}
-  .now-playing{margin-top:24px;min-height:50px}
+  .now-playing{margin-top:48px;min-height:50px}
   .tt-guide{margin-top:18px}
   .tt-guide-step{padding:0 12px}
   .tt-guide-text{font-size:10px;line-height:1.45}
@@ -495,7 +496,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 2 -->
         <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
-          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
+          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Upcoming track info"><span aria-hidden="true">i</span></button>
           <div class="vinyl-sleeve"></div>
           <div class="vinyl-disc">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -525,7 +526,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 3 -->
         <div class="vinyl-card coming-soon" id="vinyl-2" draggable="false" data-song="2">
-          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="My Devotion track info"><span aria-hidden="true">i</span></button>
+          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="Upcoming track info"><span aria-hidden="true">i</span></button>
           <div class="vinyl-sleeve"></div>
           <div class="vinyl-disc">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -602,7 +603,7 @@ section[id]{scroll-margin-top:64px}
         <!-- Now playing display -->
         <div class="now-playing" id="nowPlaying">
           <div class="np-track" id="npTrack"></div>
-          <div class="np-sub" id="npSub">Yellow Door Studios &middot; Sam Grade</div>
+          <div class="np-sub" id="npSub">A Buster &amp; Tallulah original</div>
         </div>
         <!-- Usage guide -->
         <div class="tt-guide" id="ttGuide">
@@ -626,10 +627,11 @@ section[id]{scroll-margin-top:64px}
     <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
     <div class="song-modal-content">
       <div class="song-modal-inner">
-        <div class="song-modal-eyebrow">Track Details</div>
+        <div class="song-modal-eyebrow" id="songModalEyebrow">Track Details</div>
         <h3 class="song-modal-title" id="songModalTitle"></h3>
         <div class="song-modal-fields" id="songModalFields"></div>
         <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+        <div class="song-modal-soon" id="songModalSoon">Coming soon&hellip;</div>
       </div>
     </div>
   </div>
@@ -820,7 +822,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const songs = [
   {
     title: 'Little Lady',
-    file: 'assets/little-lady.mp3',
+    file: 'assets/little-lady-teaser.mp3',
     label: '#8B2F3E',
     coverArt: 'assets/little-lady-coverart.jpeg',
     upcoming: true,
@@ -834,23 +836,13 @@ const songs = [
     title: 'Carry Me Home',
     file: 'assets/carry-me-home.mp3',
     label: '#6B1D2A',
-    upcoming: true,
-    releaseDate: 'TBC',
-    artists: 'TBC',
-    producer: 'TBC',
-    studio: 'TBC',
-    mastering: 'TBC',
+    comingSoon: true,
   },
   {
     title: 'My Devotion',
     file: 'assets/my-devotion.mp3',
     label: '#4a1019',
-    upcoming: true,
-    releaseDate: 'TBC',
-    artists: 'TBC',
-    producer: 'TBC',
-    studio: 'TBC',
-    mastering: 'TBC',
+    comingSoon: true,
   },
 ];
 
@@ -868,40 +860,61 @@ const ttGuide    = document.getElementById('ttGuide');
 /* ===== SONG INFO MODAL ===== */
 const songModalOverlay = document.getElementById('songModalOverlay');
 const songModalBg      = document.getElementById('songModalBg');
+const songModalEyebrow = document.getElementById('songModalEyebrow');
 const songModalTitle   = document.getElementById('songModalTitle');
 const songModalFields  = document.getElementById('songModalFields');
 const songModalPresave = document.getElementById('songModalPresave');
+const songModalSoon    = document.getElementById('songModalSoon');
+const songModal        = document.getElementById('songModal');
 const songModalClose   = document.getElementById('songModalClose');
 
 function openSongModal(songIdx) {
   const s = songs[songIdx];
-
-  songModalTitle.textContent = s.title;
   songModalBg.style.backgroundImage = s.coverArt ? `url('${s.coverArt}')` : 'none';
 
-  const fields = [];
-  if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
-  if (s.artists)  fields.push(['Other Artists', s.artists]);
-  fields.push(['Producer', s.producer || 'TBC']);
-  fields.push(['Production Studio', s.studio || 'TBC']);
-  fields.push(['Mastering Studio', s.mastering || 'TBC']);
-
-  songModalFields.innerHTML = fields.map(([label, value]) =>
-    `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
-  ).join('');
-
-  if (s.presave) {
-    songModalPresave.href = s.presave;
-    songModalPresave.textContent = 'Pre-Save / Pre-Order';
-    songModalPresave.classList.remove('disabled');
-    songModalPresave.removeAttribute('aria-disabled');
-    songModalPresave.removeAttribute('tabindex');
+  if (s.comingSoon) {
+    songModalEyebrow.style.display = 'none';
+    songModalTitle.style.display = 'none';
+    songModalFields.style.display = 'none';
+    songModalPresave.style.display = 'none';
+    songModalSoon.style.display = 'block';
+    songModal.setAttribute('aria-label', 'Coming soon');
+    songModal.removeAttribute('aria-labelledby');
   } else {
-    songModalPresave.href = '#';
-    songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
-    songModalPresave.classList.add('disabled');
-    songModalPresave.setAttribute('aria-disabled', 'true');
-    songModalPresave.setAttribute('tabindex', '-1');
+    songModalEyebrow.style.display = '';
+    songModalTitle.style.display = '';
+    songModalFields.style.display = '';
+    songModalPresave.style.display = '';
+    songModalSoon.style.display = 'none';
+    songModal.removeAttribute('aria-label');
+    songModal.setAttribute('aria-labelledby', 'songModalTitle');
+
+    songModalTitle.textContent = s.title;
+
+    const fields = [];
+    if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
+    if (s.artists)  fields.push(['Other Artists', s.artists]);
+    fields.push(['Producer', s.producer || 'TBC']);
+    fields.push(['Production Studio', s.studio || 'TBC']);
+    fields.push(['Mastering Studio', s.mastering || 'TBC']);
+
+    songModalFields.innerHTML = fields.map(([label, value]) =>
+      `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
+    ).join('');
+
+    if (s.presave) {
+      songModalPresave.href = s.presave;
+      songModalPresave.textContent = 'Pre-Save / Pre-Order';
+      songModalPresave.classList.remove('disabled');
+      songModalPresave.removeAttribute('aria-disabled');
+      songModalPresave.removeAttribute('tabindex');
+    } else {
+      songModalPresave.href = '#';
+      songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
+      songModalPresave.classList.add('disabled');
+      songModalPresave.setAttribute('aria-disabled', 'true');
+      songModalPresave.setAttribute('tabindex', '-1');
+    }
   }
 
   songModalOverlay.classList.add('open');

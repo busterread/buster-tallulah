@@ -226,10 +226,23 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .shows{background:var(--paper);padding:100px 0 100px;position:relative}
 .shows-inner{max-width:760px;margin:0 auto;padding:0 40px}
 .gig-grid{margin-top:36px}
-.gig{display:flex;justify-content:space-between;align-items:baseline;padding:24px 0;border-bottom:1px solid rgba(26,20,16,.11)}
+.gig{border-bottom:1px solid rgba(26,20,16,.11)}
 .gig:first-child{border-top:1px solid rgba(26,20,16,.11)}
+.gig.upcoming{display:flex;justify-content:space-between;align-items:baseline;padding:24px 0}
+.gig-head{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:20px;padding:24px 0;background:none;border:none;font:inherit;text-align:left;cursor:pointer;color:inherit}
+.gig-left{display:inline-flex;align-items:baseline;gap:12px}
 .gig-venue{font-weight:700;font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--ink)}
+.gig-status{font-style:italic;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--wine);opacity:.7}
+.gig-right{display:inline-flex;align-items:center;gap:16px}
 .gig-detail{font-style:italic;font-size:13px;color:rgba(26,20,16,.45);letter-spacing:.06em}
+.gig-chevron{width:8px;height:8px;flex:0 0 auto;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg);transition:transform .35s ease}
+.gig-head[aria-expanded="true"] .gig-chevron{transform:rotate(-135deg)}
+.gig-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.gig-panel-inner{overflow:hidden}
+.gig-head[aria-expanded="true"]+.gig-panel{grid-template-rows:1fr}
+.gig-panel-inner>*{display:block;padding-bottom:22px}
+.gig-lineup{font-style:italic;font-size:14px;color:var(--ink-soft);letter-spacing:.02em}
+.gig-date{font-style:italic;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-top:6px}
 .gig.upcoming .gig-venue{color:rgba(26,20,16,.35)}
 .gig.upcoming .gig-detail{font-style:italic;color:rgba(26,20,16,.28)}
 
@@ -303,7 +316,9 @@ section[id]{scroll-margin-top:64px}
   .tt-guide-div{height:24px}
   .shows{padding:70px 0 70px}
   .shows-inner{padding:0 22px}
-  .gig{flex-direction:column;align-items:flex-start;gap:6px;padding:20px 0}
+  .gig.upcoming{flex-direction:column;align-items:flex-start;gap:6px;padding:20px 0}
+  .gig-head{flex-direction:column;align-items:flex-start;gap:8px;padding:20px 0}
+  .gig-right{align-self:stretch;justify-content:space-between}
   .gig-venue{font-size:20px}
   .book{padding:70px 18px 60px}
 }
@@ -552,12 +567,58 @@ section[id]{scroll-margin-top:64px}
     <div class="section-label">Live</div>
     <div class="gig-grid">
       <div class="gig">
-        <span class="gig-venue">The Troubadour</span>
-        <span class="gig-detail">Old Brompton Road &middot; London &middot; 2025</span>
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-0">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Opener &middot; 2025</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-0">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Buster &amp; Tallulah, Carlton, Ted Tarling</span>
+            <span class="gig-date">28.08.2025</span>
+          </div>
+        </div>
       </div>
       <div class="gig">
-        <span class="gig-venue">The Troubadour</span>
-        <span class="gig-detail">Old Brompton Road &middot; London &middot; 2025</span>
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-1">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Support &middot; 2025</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-1">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Ellie Nanni, Buster &amp; Tallulah, Carlton</span>
+            <span class="gig-date">18.12.2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="gig">
+        <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-2">
+          <span class="gig-left">
+            <span class="gig-venue">The Troubadour</span>
+            <span class="gig-status">Sold Out</span>
+          </span>
+          <span class="gig-right">
+            <span class="gig-detail">Old Brompton Road &middot; London &middot; Headliner &middot; 2026</span>
+            <span class="gig-chevron" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="gig-panel" id="gig-panel-2">
+          <div class="gig-panel-inner">
+            <span class="gig-lineup">Carlton, Slowlight, Buster &amp; Tallulah</span>
+            <span class="gig-date">24.07.2026</span>
+          </div>
+        </div>
       </div>
       <div class="gig upcoming">
         <span class="gig-venue">Upcoming</span>
@@ -758,6 +819,14 @@ function loadRecord(songIdx) {
   tonearm.classList.remove('on-record');
   clearNowPlaying();
 }
+
+/* ===== SHOWS ACCORDION ===== */
+document.querySelectorAll('.gig-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const expanded = head.getAttribute('aria-expanded') === 'true';
+    head.setAttribute('aria-expanded', String(!expanded));
+  });
+});
 
 /* ===== DRAG & DROP - Vinyl onto platter ===== */
 document.querySelectorAll('.vinyl-card').forEach(card => {

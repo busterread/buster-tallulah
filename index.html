@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buster &amp; Tallulah</title>
-<meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet. Recorded at Yellow Door Studios, produced by Sam Grade.">
+<meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet.">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -122,6 +122,41 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .vinyl-card.used{opacity:0.2;pointer-events:none}
 .vinyl-card.coming-soon{opacity:0.3;pointer-events:none;cursor:default}
 .vinyl-card svg{width:100%;height:100%;display:block;border-radius:50%}
+
+.vinyl-info{
+  position:absolute;top:-3px;right:-3px;z-index:5;
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(26,20,16,.85);border:1px solid rgba(232,201,122,.6);
+  color:var(--gold-soft);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+  cursor:pointer;pointer-events:auto;padding:0;
+  transition:background .2s,transform .2s,border-color .2s;
+}
+.vinyl-info:hover,.vinyl-info:focus-visible{background:var(--wine);border-color:var(--gold-soft);transform:scale(1.1)}
+.vinyl-card.coming-soon .vinyl-info{opacity:.9}
+
+/* ===== SONG MODAL ===== */
+.song-modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(10,4,7,.84);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.song-modal-overlay.open{opacity:1;pointer-events:auto}
+.song-modal{position:relative;width:100%;max-width:440px;max-height:86vh;overflow-y:auto;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease}
+.song-modal-overlay.open .song-modal{transform:translateY(0) scale(1)}
+.song-modal-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:contrast(1.05) brightness(.9)}
+.song-modal-grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,5,8,.5) 0%,rgba(20,5,8,.72) 45%,var(--wine) 92%)}
+.song-modal::before{content:'';position:absolute;inset:8px;border:1px solid rgba(232,201,122,.32);pointer-events:none;z-index:2}
+.song-modal-close{position:absolute;top:14px;right:14px;z-index:4;width:32px;height:32px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.4);color:var(--gold-soft);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.song-modal-close:hover{background:rgba(26,20,16,.7)}
+.song-modal-content{position:relative;z-index:3;padding:48px 38px 38px;color:var(--cream);text-align:center}
+.song-modal-eyebrow{font-style:italic;font-size:11px;letter-spacing:.36em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);margin-bottom:14px}
+.song-modal-title{font-weight:700;font-style:italic;font-size:clamp(26px,4.4vw,34px);color:var(--cream);margin-bottom:26px}
+.song-modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;text-align:left}
+.song-modal-field{border-bottom:1px solid rgba(232,201,122,.18);padding-bottom:12px}
+.song-modal-field strong{display:block;font-style:italic;font-weight:700;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:4px}
+.song-modal-field span{font-style:italic;font-size:15px;color:var(--cream)}
+.song-modal-field.tbc span{color:rgba(245,237,224,.42)}
+.song-modal-presave{display:inline-block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--cream);background:transparent;padding:13px 28px;text-decoration:none;border:1px solid var(--gold);transition:background .25s,color .25s}
+.song-modal-presave:hover{background:var(--gold);color:var(--ink)}
+.song-modal-presave.disabled{opacity:.4;pointer-events:none;border-color:rgba(232,201,122,.3);color:rgba(245,237,224,.5)}
+body.modal-open{overflow:hidden}
 
 /* Turntable platter */
 .tt-platter-wrap{display:flex;flex-direction:column;align-items:center;gap:0}
@@ -333,6 +368,8 @@ section[id]{scroll-margin-top:64px}
   .brand .amp{font-size:18px}
   .vinyl-card{width:94px;height:94px}
   .vinyl-shelf{gap:10px}
+  .vinyl-info{width:20px;height:20px;font-size:11px}
+  .song-modal-content{padding:40px 26px 30px}
   .tt-guide{flex-wrap:wrap;gap:10px 0}
   .tt-guide-div{display:none}
   .tt-guide-step{padding:0 10px;min-width:88px}
@@ -382,8 +419,6 @@ section[id]{scroll-margin-top:64px}
       <span class="line"></span><span class="diamond"></span><span class="line"></span>
     </div>
     <div class="hero-meta">
-      <div class="item"><strong>Recorded at</strong>Yellow Door Studios</div>
-      <div class="item"><strong>Produced by</strong>Sam Grade</div>
       <div class="item"><strong>Out</strong>2026</div>
     </div>
   </div>
@@ -420,6 +455,7 @@ section[id]{scroll-margin-top:64px}
       <div class="vinyl-shelf" id="vinylShelf">
         <!-- Song 1 -->
         <div class="vinyl-card" id="vinyl-0" draggable="true" data-song="0">
+          <button class="vinyl-info" type="button" data-song="0" aria-haspopup="dialog" aria-label="Little Lady track info"><span aria-hidden="true">i</span></button>
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="vg0" cx="50%" cy="50%" r="50%">
@@ -449,6 +485,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 2 -->
         <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
+          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="vg1" cx="50%" cy="50%" r="50%">
@@ -475,6 +512,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 3 -->
         <div class="vinyl-card coming-soon" id="vinyl-2" draggable="false" data-song="2">
+          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="My Devotion track info"><span aria-hidden="true">i</span></button>
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="vg2" cx="50%" cy="50%" r="50%">
@@ -564,6 +602,21 @@ section[id]{scroll-margin-top:64px}
   </div>
 </section>
 
+<!-- SONG INFO MODAL -->
+<div class="song-modal-overlay" id="songModalOverlay">
+  <div class="song-modal" id="songModal" role="dialog" aria-modal="true" aria-labelledby="songModalTitle">
+    <div class="song-modal-bg" id="songModalBg"></div>
+    <div class="song-modal-grade"></div>
+    <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="song-modal-content">
+      <div class="song-modal-eyebrow">Track Details</div>
+      <h3 class="song-modal-title" id="songModalTitle"></h3>
+      <div class="song-modal-fields" id="songModalFields"></div>
+      <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+    </div>
+  </div>
+</div>
+
 <!-- SHOWS -->
 <section class="shows" id="live">
   <div class="shows-inner reveal">
@@ -646,7 +699,7 @@ section[id]{scroll-margin-top:64px}
     </div>
     <div class="strike"></div>
   </div>
-  <div class="footer-credit">Recorded at Yellow Door. Produced by Sam Grade. &copy; 2026 Buster &amp; Tallulah</div>
+  <div class="footer-credit">&copy; 2026 Buster &amp; Tallulah</div>
 </section>
 
 <script>
@@ -747,9 +800,40 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 /* ===== TURNTABLE INTERACTION ===== */
 const songs = [
-  { title: 'Little Lady',   file: 'assets/little-lady.mp3',    label: '#8B2F3E' },
-  { title: 'Carry Me Home', file: 'assets/carry-me-home.mp3',  label: '#6B1D2A' },
-  { title: 'My Devotion',   file: 'assets/my-devotion.mp3',    label: '#4a1019' },
+  {
+    title: 'Little Lady',
+    file: 'assets/little-lady.mp3',
+    label: '#8B2F3E',
+    coverArt: 'assets/little-lady-coverart.jpeg',
+    upcoming: true,
+    releaseDate: 'October 2, 2026', // remove once live
+    producer: 'Sam Grade',
+    studio: 'Yellow Door Studios',
+    mastering: 'AIR Studios',
+    presave: 'https://distrokid.com/hyperfollow/busterandtallulah/little-lady',
+  },
+  {
+    title: 'Carry Me Home',
+    file: 'assets/carry-me-home.mp3',
+    label: '#6B1D2A',
+    upcoming: true,
+    releaseDate: 'TBC',
+    artists: 'TBC',
+    producer: 'TBC',
+    studio: 'TBC',
+    mastering: 'TBC',
+  },
+  {
+    title: 'My Devotion',
+    file: 'assets/my-devotion.mp3',
+    label: '#4a1019',
+    upcoming: true,
+    releaseDate: 'TBC',
+    artists: 'TBC',
+    producer: 'TBC',
+    studio: 'TBC',
+    mastering: 'TBC',
+  },
 ];
 
 let loadedSong   = null;
@@ -762,6 +846,70 @@ const matLabel   = document.getElementById('matLabel');
 const npTrack    = document.getElementById('npTrack');
 const npSub      = document.getElementById('npSub');
 const ttGuide    = document.getElementById('ttGuide');
+
+/* ===== SONG INFO MODAL ===== */
+const songModalOverlay = document.getElementById('songModalOverlay');
+const songModalBg      = document.getElementById('songModalBg');
+const songModalTitle   = document.getElementById('songModalTitle');
+const songModalFields  = document.getElementById('songModalFields');
+const songModalPresave = document.getElementById('songModalPresave');
+const songModalClose   = document.getElementById('songModalClose');
+
+function openSongModal(songIdx) {
+  const s = songs[songIdx];
+
+  songModalTitle.textContent = s.title;
+  songModalBg.style.backgroundImage = s.coverArt ? `url('${s.coverArt}')` : 'none';
+
+  const fields = [];
+  if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
+  if (s.artists)  fields.push(['Other Artists', s.artists]);
+  fields.push(['Producer', s.producer || 'TBC']);
+  fields.push(['Production Studio', s.studio || 'TBC']);
+  fields.push(['Mastering Studio', s.mastering || 'TBC']);
+
+  songModalFields.innerHTML = fields.map(([label, value]) =>
+    `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
+  ).join('');
+
+  if (s.presave) {
+    songModalPresave.href = s.presave;
+    songModalPresave.textContent = 'Pre-Save / Pre-Order';
+    songModalPresave.classList.remove('disabled');
+    songModalPresave.removeAttribute('aria-disabled');
+    songModalPresave.removeAttribute('tabindex');
+  } else {
+    songModalPresave.href = '#';
+    songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
+    songModalPresave.classList.add('disabled');
+    songModalPresave.setAttribute('aria-disabled', 'true');
+    songModalPresave.setAttribute('tabindex', '-1');
+  }
+
+  songModalOverlay.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function closeSongModal() {
+  songModalOverlay.classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+document.querySelectorAll('.vinyl-info').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    e.preventDefault();
+    openSongModal(parseInt(btn.dataset.song, 10));
+  });
+});
+
+songModalClose.addEventListener('click', closeSongModal);
+songModalOverlay.addEventListener('click', e => {
+  if (e.target === songModalOverlay) closeSongModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && songModalOverlay.classList.contains('open')) closeSongModal();
+});
 
 function buildVinylSVG(songIdx) {
   const c = songs[songIdx].label;

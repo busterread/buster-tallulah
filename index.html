@@ -236,12 +236,12 @@ body.modal-open{overflow:hidden}
   width:28%;
   z-index:20;
   transform-origin:82% 12%;
-  transform:rotate(18deg);
+  transform:rotate(-25deg);
   cursor:grab;
   transition:transform .6s cubic-bezier(.34,1.56,.64,1);
 }
 .tt-tonearm:active{cursor:grabbing}
-.tt-tonearm.on-record{transform:rotate(-25deg)}
+.tt-tonearm.on-record{transform:rotate(18deg)}
 .tt-tonearm.dragging-arm{transition:none;cursor:grabbing}
 .tt-tonearm svg{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 16px rgba(0,0,0,.7))}
 
@@ -264,15 +264,33 @@ body.modal-open{overflow:hidden}
 .np-track.show{opacity:1}
 .np-sub{font-style:italic;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft);opacity:0;transition:opacity .4s .1s}
 .np-sub.show{opacity:1}
-.tt-stop-btn{
-  display:none;align-items:center;gap:8px;margin-top:18px;
-  font-style:italic;font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;
-  color:var(--gold-soft);background:transparent;border:1px solid rgba(232,201,122,.42);
-  padding:9px 20px;cursor:pointer;transition:background .2s,color .2s,border-color .2s;
+
+/* Turntable power switch - vintage flip toggle mounted on the body */
+.tt-power{
+  position:absolute;left:5%;bottom:6%;z-index:15;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:none;border:none;padding:0;cursor:pointer;
 }
-.tt-stop-btn.show{display:inline-flex}
-.tt-stop-btn:hover{background:rgba(232,201,122,.14);border-color:var(--gold-soft)}
-.tt-stop-icon{width:8px;height:8px;background:currentColor;display:inline-block}
+.tt-power-plate{
+  width:18px;height:32px;border-radius:4px;
+  background:linear-gradient(180deg,#2a1c10,#120b06);
+  border:1px solid rgba(232,201,122,.35);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.7),0 2px 6px rgba(0,0,0,.5);
+  position:relative;transition:border-color .2s;
+}
+.tt-power-lever{
+  position:absolute;left:50%;top:15px;transform:translateX(-50%);
+  width:11px;height:13px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold-soft),var(--gold-deep));
+  box-shadow:0 2px 4px rgba(0,0,0,.6);
+  transition:top .25s cubic-bezier(.34,1.56,.64,1);
+}
+.tt-power.on .tt-power-lever{top:4px}
+.tt-power-label{
+  font-style:italic;font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(232,201,122,.4);font-weight:700;
+}
+.tt-power:hover .tt-power-plate{border-color:rgba(232,201,122,.6)}
 .np-hint{font-style:italic;font-size:12px;color:rgba(245,237,224,.32);letter-spacing:.08em}
 
 /* ===== SHOWS ===== */
@@ -571,6 +589,11 @@ section[id]{scroll-margin-top:64px}
         <div class="tt-unit" id="ttUnit">
           <div class="tt-body"></div>
 
+          <button class="tt-power" id="ttPower" type="button" aria-label="Turntable power switch — stops playback and lifts the needle" aria-pressed="false">
+            <span class="tt-power-plate"><span class="tt-power-lever" aria-hidden="true"></span></span>
+            <span class="tt-power-label" aria-hidden="true">Power</span>
+          </button>
+
           <div class="tt-platter" id="ttPlatter">
             <div class="tt-mat" id="ttMat">
               <div class="tt-mat-label" id="matLabel"></div>
@@ -615,7 +638,6 @@ section[id]{scroll-margin-top:64px}
         <div class="now-playing" id="nowPlaying">
           <div class="np-track" id="npTrack"></div>
           <div class="np-sub" id="npSub">A Buster &amp; Tallulah original</div>
-          <button class="tt-stop-btn" id="ttStopBtn" type="button" aria-label="Stop playback and lift the needle"><span class="tt-stop-icon" aria-hidden="true"></span>Stop</button>
         </div>
         <!-- Usage guide -->
         <div class="tt-guide" id="ttGuide">
@@ -744,46 +766,63 @@ const nav           = document.getElementById('nav');
 const progressBar   = document.getElementById('progressBar');
 const progressFill  = document.getElementById('progressFill');
 
-const isMobile = window.innerWidth <= 560;
+/* The hero photo switches to background-size:contain below this width (see the
+   @media(max-width:560px) rule on .hero-img) so it never crops either person out of
+   frame. The spotlight's circular reveal is only meant for the wide/cover-fit photo —
+   over a letterboxed one it shows the letterbox bars inside the circle. Keep the two
+   in sync with a live matchMedia listener rather than a one-time width check, so
+   resizing the window across the breakpoint (e.g. in devtools, without a reload)
+   can't leave the spotlight running against a now-letterboxed image underneath it. */
+const mobileHeroQuery = window.matchMedia('(max-width: 560px)');
+let spotProgress = 0;
 
-if (isMobile) {
+function onHeroScroll() {
+  const heroEl = document.getElementById('hero');
+  const scrollY = window.scrollY;
+  const heroH  = heroEl.offsetHeight;
+  spotProgress = Math.min(1, scrollY / (heroH * 0.7));
+
+  const maxSize = Math.max(window.innerWidth, window.innerHeight) * 2.8;
+  const minSize = 0.58 * Math.min(window.innerWidth, window.innerHeight);
+  const pxSize = minSize + spotProgress * (maxSize - minSize);
+  spotlightRing.style.width  = pxSize + 'px';
+  spotlightRing.style.height = pxSize + 'px';
+  curtainText.style.opacity  = Math.max(0, 1 - spotProgress * 3.5);
+
+  if (spotProgress > 0.75) {
+    heroContent.classList.add('show');
+    nav.classList.add('show');
+    progressBar.classList.add('show');
+  } else {
+    heroContent.classList.remove('show');
+  }
+  spotlightWrap.style.visibility = spotProgress >= 1 ? 'hidden' : 'visible';
+}
+
+function enableSpotlight() {
+  spotlightWrap.style.display = '';
+  window.addEventListener('scroll', onHeroScroll, { passive: true });
+  onHeroScroll();
+}
+
+function disableSpotlight() {
+  window.removeEventListener('scroll', onHeroScroll);
   spotlightWrap.style.display = 'none';
   nav.classList.add('show');
   progressBar.classList.add('show');
   heroContent.classList.add('show');
-} else {
-  let spotProgress = 0;
-  const maxSize = Math.max(window.innerWidth, window.innerHeight) * 2.8;
-
-  function onHeroScroll() {
-    const heroEl = document.getElementById('hero');
-    const scrollY = window.scrollY;
-    const heroH  = heroEl.offsetHeight;
-    spotProgress = Math.min(1, scrollY / (heroH * 0.7));
-
-    const size = 58 + spotProgress * (maxSize / (Math.max(window.innerWidth, window.innerHeight) / 100) - 58);
-    const vmin = Math.max(window.innerWidth, window.innerHeight);
-    const pxSize = 0.58 * Math.min(window.innerWidth, window.innerHeight) + spotProgress * (maxSize - 0.58 * Math.min(window.innerWidth, window.innerHeight));
-    spotlightRing.style.width  = pxSize + 'px';
-    spotlightRing.style.height = pxSize + 'px';
-    curtainText.style.opacity  = Math.max(0, 1 - spotProgress * 3.5);
-
-    if (spotProgress > 0.75) {
-      heroContent.classList.add('show');
-      nav.classList.add('show');
-      progressBar.classList.add('show');
-    } else {
-      heroContent.classList.remove('show');
-    }
-    if (spotProgress >= 1) {
-      spotlightWrap.style.visibility = 'hidden';
-    } else {
-      spotlightWrap.style.visibility = 'visible';
-    }
-  }
-  window.addEventListener('scroll', onHeroScroll, { passive: true });
-  onHeroScroll();
 }
+
+function applySpotlightForViewport(e) {
+  if (e.matches) {
+    disableSpotlight();
+  } else {
+    enableSpotlight();
+  }
+}
+
+applySpotlightForViewport(mobileHeroQuery);
+mobileHeroQuery.addEventListener('change', applySpotlightForViewport);
 
 /* Progress bar */
 function updateProgress() {
@@ -868,7 +907,11 @@ const matLabel   = document.getElementById('matLabel');
 const npTrack    = document.getElementById('npTrack');
 const npSub      = document.getElementById('npSub');
 const ttGuide    = document.getElementById('ttGuide');
-const ttStopBtn  = document.getElementById('ttStopBtn');
+const ttPower    = document.getElementById('ttPower');
+
+/* Tonearm rest angle (needle up, off the record) vs. drop angle (needle down, in the groove) */
+const ARM_OFF_ANGLE = -25;
+const ARM_ON_ANGLE  = 18;
 
 /* Primary input is touch-like (phones/tablets) vs a precise mouse/trackpad.
    Interaction model differs completely between the two, so decide once up front. */
@@ -996,19 +1039,29 @@ function clearNowPlaying() {
   ttGuide.classList.remove('hidden');
 }
 
+function syncPowerSwitch() {
+  ttPower.classList.toggle('on', isPlaying);
+  ttPower.setAttribute('aria-pressed', String(isPlaying));
+}
+
 function stopAudio() {
   if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
   isPlaying = false;
   vinylOnPlatter.classList.remove('playing');
+  syncPowerSwitch();
 }
 
 function startAudio(songIdx) {
   stopAudio();
   audioEl = new Audio(songs[songIdx].file);
   audioEl.loop = true;
-  audioEl.play().catch(() => {}); // graceful if file missing
+  audioEl.addEventListener('error', () => {
+    console.error('Turntable audio failed to load:', songs[songIdx].file, audioEl.error);
+  });
+  audioEl.play().catch(err => console.warn('Turntable playback was blocked:', err));
   isPlaying = true;
   vinylOnPlatter.classList.add('playing');
+  syncPowerSwitch();
 }
 
 function loadRecord(songIdx) {
@@ -1021,9 +1074,8 @@ function loadRecord(songIdx) {
   vinylOnPlatter.style.transition = '';
   matLabel.style.display = 'none';
   tonearm.classList.remove('on-record');
-  tonearm.style.transform = 'rotate(18deg)';
+  tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
   clearNowPlaying();
-  ttStopBtn.classList.add('show');
 }
 
 function ejectRecord() {
@@ -1035,27 +1087,26 @@ function ejectRecord() {
   vinylOnPlatter.style.transition = '';
   matLabel.style.display = '';
   tonearm.classList.remove('on-record');
-  tonearm.style.transform = 'rotate(18deg)';
+  tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
   clearNowPlaying();
-  ttStopBtn.classList.remove('show');
 }
 
 /* Pauses playback and lifts the needle, but leaves the record loaded on the platter. */
 function stopPlayback() {
   stopAudio();
   tonearm.classList.remove('on-record');
-  tonearm.style.transform = 'rotate(18deg)';
+  tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
 }
 
 function dropNeedle() {
   if (loadedSong === null || isPlaying) return;
-  tonearm.style.transform = 'rotate(-25deg)';
+  tonearm.style.transform = `rotate(${ARM_ON_ANGLE}deg)`;
   tonearm.classList.add('on-record');
   startAudio(loadedSong);
   setNowPlaying(loadedSong);
 }
 
-ttStopBtn.addEventListener('click', stopPlayback);
+ttPower.addEventListener('click', stopPlayback);
 
 /* Match the on-screen instructions to how this device actually interacts with the turntable */
 (function setGuideCopy() {
@@ -1183,8 +1234,10 @@ if (isTouchDevice) {
     return Math.min(22, Math.max(-30, angle));
   }
 
+  /* The stylus visually sits on the disc from about the pivot's 0deg mark up to the clamp
+     max; anything swung further negative rests off the disc, over the plinth. */
   function checkArmOnRecord(angle) {
-    return angle > -30 && angle < 0;
+    return angle > -6;
   }
 
   tonearm.addEventListener('mousedown', startArmDrag);
@@ -1196,7 +1249,7 @@ if (isTouchDevice) {
     armStartAngle = getAngle(pivot, e.clientX, e.clientY);
     // get current rotation
     const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
-    armStartAngle -= m ? parseFloat(m[1]) : 18;
+    armStartAngle -= m ? parseFloat(m[1]) : ARM_OFF_ANGLE;
   }
 
   document.addEventListener('mousemove', moveArm);
@@ -1230,15 +1283,15 @@ if (isTouchDevice) {
     tonearm.classList.remove('dragging-arm');
     // Snap: if close to on-record zone and record loaded, snap onto it
     const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
-    const angle = m ? parseFloat(m[1]) : -25;
+    const angle = m ? parseFloat(m[1]) : ARM_OFF_ANGLE;
     if (loadedSong !== null && checkArmOnRecord(angle)) {
-      tonearm.style.transform = 'rotate(-25deg)';
+      tonearm.style.transform = `rotate(${ARM_ON_ANGLE}deg)`;
       tonearm.classList.add('on-record');
       if (!isPlaying) { startAudio(loadedSong); setNowPlaying(loadedSong); }
     } else if (!checkArmOnRecord(angle)) {
       tonearm.style.transition = 'transform .6s cubic-bezier(.34,1.56,.64,1)';
       if (!isPlaying) {
-        tonearm.style.transform = 'rotate(18deg)';
+        tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
         tonearm.classList.remove('on-record');
       }
       setTimeout(() => tonearm.style.transition = '', 700);

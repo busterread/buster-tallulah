@@ -100,8 +100,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .profile-role{margin-top:10px;font-style:italic;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);font-weight:700}
 
 /* ===== TURNTABLE SECTION ===== */
-.turntable-section{background:var(--ink);color:var(--cream);padding:100px 32px 120px;position:relative;overflow:hidden}
-.turntable-section::before{content:'';position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=2200&q=80&auto=format&fit=crop');background-size:cover;background-position:center;filter:grayscale(.7) brightness(.25) contrast(1.1);opacity:.4}
+.turntable-section{background:var(--wine);color:var(--cream);padding:100px 32px 120px;position:relative;overflow:hidden}
 .tt-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto}
 .tt-header{text-align:center;margin-bottom:70px}
 .tt-header h2{font-weight:700;font-style:italic;font-size:clamp(32px,4.5vw,58px);line-height:1.0;color:var(--cream)}
@@ -126,7 +125,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
   position:absolute;inset:0;background:linear-gradient(155deg,#2a1015,#0a0606 75%) center/cover no-repeat;
   box-shadow:inset 0 0 0 1px rgba(232,201,122,.22),0 10px 24px rgba(0,0,0,.5);
 }
-.vinyl-disc{position:absolute;left:16%;top:16%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
+.vinyl-disc{position:absolute;left:8%;top:8%;width:84%;height:84%;border-radius:50%;box-shadow:-4px 8px 18px rgba(0,0,0,.55)}
 .vinyl-disc svg{width:100%;height:100%;display:block;border-radius:50%}
 
 .vinyl-info{
@@ -163,6 +162,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .song-modal-presave{display:inline-block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--cream);background:transparent;padding:13px 28px;text-decoration:none;border:1px solid var(--gold);transition:background .25s,color .25s}
 .song-modal-presave:hover{background:var(--gold);color:var(--ink)}
 .song-modal-presave.disabled{opacity:.4;pointer-events:none;border-color:rgba(232,201,122,.3);color:rgba(245,237,224,.5)}
+.song-modal-soon{display:none;font-weight:700;font-style:italic;font-size:clamp(30px,6vw,46px);color:var(--cream)}
 body.modal-open{overflow:hidden}
 
 /* Turntable platter */
@@ -211,7 +211,7 @@ body.modal-open{overflow:hidden}
   display:flex;align-items:center;justify-content:center;
 }
 .tt-mat-label{font-style:italic;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,201,122,.22);text-align:center;line-height:1.6;padding:12px}
-.tt-spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#1A1410;box-shadow:0 0 0 4px rgba(232,201,122,.3),0 0 12px rgba(0,0,0,.8);z-index:10}
+.tt-spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#1A1410;box-shadow:0 0 0 4px rgba(232,201,122,.3),0 0 12px rgba(0,0,0,.8);z-index:10;pointer-events:none}
 
 /* Vinyl on platter */
 .vinyl-on-platter{
@@ -224,6 +224,8 @@ body.modal-open{overflow:hidden}
 }
 .vinyl-on-platter.loaded{display:block}
 .vinyl-on-platter.playing{animation-play-state:running}
+.vinyl-on-platter.loaded{cursor:grab}
+.vinyl-on-platter.record-dragging{cursor:grabbing}
 .vinyl-on-platter svg{width:100%;height:100%;display:block;border-radius:50%}
 @keyframes spinPlatter{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
 
@@ -253,7 +255,7 @@ body.modal-open{overflow:hidden}
 
 /* Now playing */
 .now-playing{
-  margin-top:32px;
+  margin-top:64px;
   text-align:center;
   min-height:60px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
@@ -262,6 +264,15 @@ body.modal-open{overflow:hidden}
 .np-track.show{opacity:1}
 .np-sub{font-style:italic;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft);opacity:0;transition:opacity .4s .1s}
 .np-sub.show{opacity:1}
+.tt-stop-btn{
+  display:none;align-items:center;gap:8px;margin-top:18px;
+  font-style:italic;font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;
+  color:var(--gold-soft);background:transparent;border:1px solid rgba(232,201,122,.42);
+  padding:9px 20px;cursor:pointer;transition:background .2s,color .2s,border-color .2s;
+}
+.tt-stop-btn.show{display:inline-flex}
+.tt-stop-btn:hover{background:rgba(232,201,122,.14);border-color:var(--gold-soft)}
+.tt-stop-icon{width:8px;height:8px;background:currentColor;display:inline-block}
 .np-hint{font-style:italic;font-size:12px;color:rgba(245,237,224,.32);letter-spacing:.08em}
 
 /* ===== SHOWS ===== */
@@ -337,6 +348,7 @@ section[id]{scroll-margin-top:64px}
 
 @media(max-width:560px){
   .hero{height:100svh;min-height:480px}
+  .hero-img{background-size:contain;background-repeat:no-repeat;background-position:center 30%;background-color:#0a0407;transform:none}
   .hero-name{font-size:clamp(40px,13vw,72px)}
   .hero-eyebrow{font-size:11px;letter-spacing:.32em;margin-bottom:22px}
   .hero-eyebrow::before,.hero-eyebrow::after{width:30px}
@@ -354,7 +366,7 @@ section[id]{scroll-margin-top:64px}
   .tt-header{margin-bottom:36px}
   .tt-header h2{font-size:clamp(26px,7vw,40px)}
   .tt-header p{font-size:13px;margin-top:10px}
-  .now-playing{margin-top:24px;min-height:50px}
+  .now-playing{margin-top:48px;min-height:50px}
   .tt-guide{margin-top:18px}
   .tt-guide-step{padding:0 12px}
   .tt-guide-text{font-size:10px;line-height:1.45}
@@ -495,7 +507,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 2 -->
         <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
-          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
+          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Upcoming track info"><span aria-hidden="true">i</span></button>
           <div class="vinyl-sleeve"></div>
           <div class="vinyl-disc">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -525,7 +537,7 @@ section[id]{scroll-margin-top:64px}
 
         <!-- Song 3 -->
         <div class="vinyl-card coming-soon" id="vinyl-2" draggable="false" data-song="2">
-          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="My Devotion track info"><span aria-hidden="true">i</span></button>
+          <button class="vinyl-info" type="button" data-song="2" aria-haspopup="dialog" aria-label="Upcoming track info"><span aria-hidden="true">i</span></button>
           <div class="vinyl-sleeve"></div>
           <div class="vinyl-disc">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -602,15 +614,16 @@ section[id]{scroll-margin-top:64px}
         <!-- Now playing display -->
         <div class="now-playing" id="nowPlaying">
           <div class="np-track" id="npTrack"></div>
-          <div class="np-sub" id="npSub">Yellow Door Studios &middot; Sam Grade</div>
+          <div class="np-sub" id="npSub">A Buster &amp; Tallulah original</div>
+          <button class="tt-stop-btn" id="ttStopBtn" type="button" aria-label="Stop playback and lift the needle"><span class="tt-stop-icon" aria-hidden="true"></span>Stop</button>
         </div>
         <!-- Usage guide -->
         <div class="tt-guide" id="ttGuide">
-          <div class="tt-guide-step"><div class="tt-guide-num">01</div><div class="tt-guide-text">Select a record<br>from the shelf</div></div>
+          <div class="tt-guide-step"><div class="tt-guide-num">01</div><div class="tt-guide-text" id="ttGuideText1">Select a record<br>from the shelf</div></div>
           <div class="tt-guide-div"></div>
-          <div class="tt-guide-step"><div class="tt-guide-num">02</div><div class="tt-guide-text">Needle drops,<br>music plays</div></div>
+          <div class="tt-guide-step"><div class="tt-guide-num">02</div><div class="tt-guide-text" id="ttGuideText2">Needle drops,<br>music plays</div></div>
           <div class="tt-guide-div"></div>
-          <div class="tt-guide-step"><div class="tt-guide-num">03</div><div class="tt-guide-text">Select another<br>to change track</div></div>
+          <div class="tt-guide-step"><div class="tt-guide-num">03</div><div class="tt-guide-text" id="ttGuideText3">Select another<br>to change track</div></div>
         </div>
       </div>
 
@@ -626,10 +639,11 @@ section[id]{scroll-margin-top:64px}
     <button class="song-modal-close" id="songModalClose" type="button" aria-label="Close">&times;</button>
     <div class="song-modal-content">
       <div class="song-modal-inner">
-        <div class="song-modal-eyebrow">Track Details</div>
+        <div class="song-modal-eyebrow" id="songModalEyebrow">Track Details</div>
         <h3 class="song-modal-title" id="songModalTitle"></h3>
         <div class="song-modal-fields" id="songModalFields"></div>
         <a class="song-modal-presave" id="songModalPresave" href="#" target="_blank" rel="noopener">Pre-Save / Pre-Order</a>
+        <div class="song-modal-soon" id="songModalSoon">Coming soon&hellip;</div>
       </div>
     </div>
   </div>
@@ -820,7 +834,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const songs = [
   {
     title: 'Little Lady',
-    file: 'assets/little-lady.mp3',
+    file: 'assets/little-lady-teaser.mp3',
     label: '#8B2F3E',
     coverArt: 'assets/little-lady-coverart.jpeg',
     upcoming: true,
@@ -834,23 +848,13 @@ const songs = [
     title: 'Carry Me Home',
     file: 'assets/carry-me-home.mp3',
     label: '#6B1D2A',
-    upcoming: true,
-    releaseDate: 'TBC',
-    artists: 'TBC',
-    producer: 'TBC',
-    studio: 'TBC',
-    mastering: 'TBC',
+    comingSoon: true,
   },
   {
     title: 'My Devotion',
     file: 'assets/my-devotion.mp3',
     label: '#4a1019',
-    upcoming: true,
-    releaseDate: 'TBC',
-    artists: 'TBC',
-    producer: 'TBC',
-    studio: 'TBC',
-    mastering: 'TBC',
+    comingSoon: true,
   },
 ];
 
@@ -864,44 +868,70 @@ const matLabel   = document.getElementById('matLabel');
 const npTrack    = document.getElementById('npTrack');
 const npSub      = document.getElementById('npSub');
 const ttGuide    = document.getElementById('ttGuide');
+const ttStopBtn  = document.getElementById('ttStopBtn');
+
+/* Primary input is touch-like (phones/tablets) vs a precise mouse/trackpad.
+   Interaction model differs completely between the two, so decide once up front. */
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
 /* ===== SONG INFO MODAL ===== */
 const songModalOverlay = document.getElementById('songModalOverlay');
 const songModalBg      = document.getElementById('songModalBg');
+const songModalEyebrow = document.getElementById('songModalEyebrow');
 const songModalTitle   = document.getElementById('songModalTitle');
 const songModalFields  = document.getElementById('songModalFields');
 const songModalPresave = document.getElementById('songModalPresave');
+const songModalSoon    = document.getElementById('songModalSoon');
+const songModal        = document.getElementById('songModal');
 const songModalClose   = document.getElementById('songModalClose');
 
 function openSongModal(songIdx) {
   const s = songs[songIdx];
-
-  songModalTitle.textContent = s.title;
   songModalBg.style.backgroundImage = s.coverArt ? `url('${s.coverArt}')` : 'none';
 
-  const fields = [];
-  if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
-  if (s.artists)  fields.push(['Other Artists', s.artists]);
-  fields.push(['Producer', s.producer || 'TBC']);
-  fields.push(['Production Studio', s.studio || 'TBC']);
-  fields.push(['Mastering Studio', s.mastering || 'TBC']);
-
-  songModalFields.innerHTML = fields.map(([label, value]) =>
-    `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
-  ).join('');
-
-  if (s.presave) {
-    songModalPresave.href = s.presave;
-    songModalPresave.textContent = 'Pre-Save / Pre-Order';
-    songModalPresave.classList.remove('disabled');
-    songModalPresave.removeAttribute('aria-disabled');
-    songModalPresave.removeAttribute('tabindex');
+  if (s.comingSoon) {
+    songModalEyebrow.style.display = 'none';
+    songModalTitle.style.display = 'none';
+    songModalFields.style.display = 'none';
+    songModalPresave.style.display = 'none';
+    songModalSoon.style.display = 'block';
+    songModal.setAttribute('aria-label', 'Coming soon');
+    songModal.removeAttribute('aria-labelledby');
   } else {
-    songModalPresave.href = '#';
-    songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
-    songModalPresave.classList.add('disabled');
-    songModalPresave.setAttribute('aria-disabled', 'true');
-    songModalPresave.setAttribute('tabindex', '-1');
+    songModalEyebrow.style.display = '';
+    songModalTitle.style.display = '';
+    songModalFields.style.display = '';
+    songModalPresave.style.display = '';
+    songModalSoon.style.display = 'none';
+    songModal.removeAttribute('aria-label');
+    songModal.setAttribute('aria-labelledby', 'songModalTitle');
+
+    songModalTitle.textContent = s.title;
+
+    const fields = [];
+    if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
+    if (s.artists)  fields.push(['Other Artists', s.artists]);
+    fields.push(['Producer', s.producer || 'TBC']);
+    fields.push(['Production Studio', s.studio || 'TBC']);
+    fields.push(['Mastering Studio', s.mastering || 'TBC']);
+
+    songModalFields.innerHTML = fields.map(([label, value]) =>
+      `<div class="song-modal-field${value === 'TBC' ? ' tbc' : ''}"><strong>${label}</strong><span>${value}</span></div>`
+    ).join('');
+
+    if (s.presave) {
+      songModalPresave.href = s.presave;
+      songModalPresave.textContent = 'Pre-Save / Pre-Order';
+      songModalPresave.classList.remove('disabled');
+      songModalPresave.removeAttribute('aria-disabled');
+      songModalPresave.removeAttribute('tabindex');
+    } else {
+      songModalPresave.href = '#';
+      songModalPresave.textContent = 'Pre-Save / Pre-Order — TBC';
+      songModalPresave.classList.add('disabled');
+      songModalPresave.setAttribute('aria-disabled', 'true');
+      songModalPresave.setAttribute('tabindex', '-1');
+    }
   }
 
   songModalOverlay.classList.add('open');
@@ -987,10 +1017,61 @@ function loadRecord(songIdx) {
   vinylOnPlatter.innerHTML = buildVinylSVG(songIdx);
   vinylOnPlatter.classList.add('loaded');
   vinylOnPlatter.classList.remove('playing');
+  vinylOnPlatter.style.transform = '';
+  vinylOnPlatter.style.transition = '';
   matLabel.style.display = 'none';
   tonearm.classList.remove('on-record');
+  tonearm.style.transform = 'rotate(18deg)';
   clearNowPlaying();
+  ttStopBtn.classList.add('show');
 }
+
+function ejectRecord() {
+  loadedSong = null;
+  stopAudio();
+  vinylOnPlatter.classList.remove('loaded', 'playing', 'record-dragging');
+  vinylOnPlatter.innerHTML = '';
+  vinylOnPlatter.style.transform = '';
+  vinylOnPlatter.style.transition = '';
+  matLabel.style.display = '';
+  tonearm.classList.remove('on-record');
+  tonearm.style.transform = 'rotate(18deg)';
+  clearNowPlaying();
+  ttStopBtn.classList.remove('show');
+}
+
+/* Pauses playback and lifts the needle, but leaves the record loaded on the platter. */
+function stopPlayback() {
+  stopAudio();
+  tonearm.classList.remove('on-record');
+  tonearm.style.transform = 'rotate(18deg)';
+}
+
+function dropNeedle() {
+  if (loadedSong === null || isPlaying) return;
+  tonearm.style.transform = 'rotate(-25deg)';
+  tonearm.classList.add('on-record');
+  startAudio(loadedSong);
+  setNowPlaying(loadedSong);
+}
+
+ttStopBtn.addEventListener('click', stopPlayback);
+
+/* Match the on-screen instructions to how this device actually interacts with the turntable */
+(function setGuideCopy() {
+  const t1 = document.getElementById('ttGuideText1');
+  const t2 = document.getElementById('ttGuideText2');
+  const t3 = document.getElementById('ttGuideText3');
+  if (isTouchDevice) {
+    t1.innerHTML = 'Tap a record<br>from the shelf';
+    t2.innerHTML = 'Tap the needle<br>to drop &amp; play';
+    t3.innerHTML = 'Tap it again<br>to remove';
+  } else {
+    t1.innerHTML = 'Drag a record<br>onto the turntable';
+    t2.innerHTML = 'Drag the needle<br>onto the record';
+    t3.innerHTML = 'Drag it off<br>to remove';
+  }
+})();
 
 /* ===== SHOWS ACCORDION ===== */
 document.querySelectorAll('.gig-head').forEach(head => {
@@ -1000,135 +1081,168 @@ document.querySelectorAll('.gig-head').forEach(head => {
   });
 });
 
-/* ===== DRAG & DROP - Vinyl onto platter ===== */
-document.querySelectorAll('.vinyl-card').forEach(card => {
-  card.addEventListener('dragstart', e => {
-    e.dataTransfer.setData('songIdx', card.dataset.song);
-    card.classList.add('dragging');
-  });
-  card.addEventListener('dragend', () => card.classList.remove('dragging'));
-});
-
 const ttPlatter = document.getElementById('ttPlatter');
+const shelfCards = Array.from(document.querySelectorAll('.vinyl-card'));
 
-ttPlatter.addEventListener('dragover', e => {
-  e.preventDefault();
-  ttDropzone.classList.add('over');
-});
-ttPlatter.addEventListener('dragleave', () => ttDropzone.classList.remove('over'));
-ttPlatter.addEventListener('drop', e => {
-  e.preventDefault();
-  ttDropzone.classList.remove('over');
-  const idx = parseInt(e.dataTransfer.getData('songIdx'), 10);
-  loadRecord(idx);
-  setTimeout(() => {
-    tonearm.style.transform = 'rotate(-25deg)';
-    tonearm.classList.add('on-record');
-    startAudio(idx);
-    setNowPlaying(idx);
-  }, 300);
-});
-
-/* Click to select vinyl card - auto-plays */
-document.querySelectorAll('.vinyl-card').forEach(card => {
-  card.addEventListener('click', () => {
+if (isTouchDevice) {
+  /* ===== TOUCH: tap a record to load it; tap the loaded one again to remove it ===== */
+  shelfCards.forEach(card => {
+    card.draggable = false;
     const idx = parseInt(card.dataset.song, 10);
-    loadRecord(idx);
-    setTimeout(() => {
-      tonearm.style.transform = 'rotate(-25deg)';
-      tonearm.classList.add('on-record');
-      startAudio(idx);
-      setNowPlaying(idx);
-    }, 300);
+    if (songs[idx].comingSoon) return;
+    card.addEventListener('click', () => {
+      if (loadedSong === idx) {
+        ejectRecord();
+      } else {
+        loadRecord(idx);
+      }
+    });
   });
-});
+} else {
+  /* ===== POINTER: drag a record onto the turntable to load it ===== */
+  shelfCards.forEach(card => {
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('songIdx', card.dataset.song);
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  });
+
+  ttPlatter.addEventListener('dragover', e => {
+    e.preventDefault();
+    ttDropzone.classList.add('over');
+  });
+  ttPlatter.addEventListener('dragleave', () => ttDropzone.classList.remove('over'));
+  ttPlatter.addEventListener('drop', e => {
+    e.preventDefault();
+    ttDropzone.classList.remove('over');
+    const idx = parseInt(e.dataTransfer.getData('songIdx'), 10);
+    loadRecord(idx);
+  });
+
+  /* Drag the loaded record off the platter to remove it */
+  let recordDragging = false;
+  let recordDragStart = { x: 0, y: 0 };
+  let recordDragOffset = { x: 0, y: 0 };
+
+  vinylOnPlatter.addEventListener('mousedown', e => {
+    if (loadedSong === null) return;
+    e.preventDefault();
+    recordDragging = true;
+    recordDragStart = { x: e.clientX, y: e.clientY };
+    recordDragOffset = { x: 0, y: 0 };
+    vinylOnPlatter.classList.add('record-dragging');
+    stopPlayback(); // picking the record up lifts the needle first
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!recordDragging) return;
+    recordDragOffset = { x: e.clientX - recordDragStart.x, y: e.clientY - recordDragStart.y };
+    vinylOnPlatter.style.transform = `translate(calc(-50% + ${recordDragOffset.x}px), calc(-50% + ${recordDragOffset.y}px))`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!recordDragging) return;
+    recordDragging = false;
+    vinylOnPlatter.classList.remove('record-dragging');
+    const dist = Math.hypot(recordDragOffset.x, recordDragOffset.y);
+    const platterRadius = ttPlatter.getBoundingClientRect().width / 2;
+    if (dist > platterRadius * 0.6) {
+      ejectRecord();
+    } else {
+      vinylOnPlatter.style.transition = 'transform .4s cubic-bezier(.34,1.56,.64,1)';
+      vinylOnPlatter.style.transform = 'translate(-50%,-50%)';
+      setTimeout(() => { vinylOnPlatter.style.transition = ''; }, 450);
+    }
+  });
+}
 
 /* ===== TONEARM INTERACTION ===== */
-let armDragging = false;
-let armStartX, armStartY, armStartAngle;
-const pivotPercent = { x: 0.82, y: 0.12 }; // matches SVG transform-origin
+if (isTouchDevice) {
+  /* ===== TOUCH: tap the needle to drop it and start playback ===== */
+  tonearm.addEventListener('click', dropNeedle);
+} else {
+  /* ===== POINTER: drag the needle onto the record to start playback ===== */
+  let armDragging = false;
+  let armStartAngle;
+  const pivotPercent = { x: 0.82, y: 0.12 }; // matches SVG transform-origin
 
-function getTonearmPivot() {
-  const rect = tonearm.getBoundingClientRect();
-  return {
-    x: rect.left + rect.width * pivotPercent.x,
-    y: rect.top  + rect.height * pivotPercent.y,
-  };
-}
+  function getTonearmPivot() {
+    const rect = tonearm.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width * pivotPercent.x,
+      y: rect.top  + rect.height * pivotPercent.y,
+    };
+  }
 
-function getAngle(pivot, x, y) {
-  return Math.atan2(y - pivot.y, x - pivot.x) * 180 / Math.PI;
-}
+  function getAngle(pivot, x, y) {
+    return Math.atan2(y - pivot.y, x - pivot.x) * 180 / Math.PI;
+  }
 
-function clampArm(angle) {
-  return Math.min(22, Math.max(-30, angle));
-}
+  function clampArm(angle) {
+    return Math.min(22, Math.max(-30, angle));
+  }
 
-function checkArmOnRecord(angle) {
-  return angle > -30 && angle < 0;
-}
+  function checkArmOnRecord(angle) {
+    return angle > -30 && angle < 0;
+  }
 
-tonearm.addEventListener('mousedown', startArmDrag);
-tonearm.addEventListener('touchstart', e => { e.preventDefault(); startArmDrag(e.touches[0]); }, { passive: false });
+  tonearm.addEventListener('mousedown', startArmDrag);
 
-function startArmDrag(e) {
-  armDragging = true;
-  tonearm.classList.add('dragging-arm');
-  const pivot = getTonearmPivot();
-  armStartAngle = getAngle(pivot, e.clientX, e.clientY);
-  // get current rotation
-  const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
-  armStartAngle -= m ? parseFloat(m[1]) : 18;
-}
+  function startArmDrag(e) {
+    armDragging = true;
+    tonearm.classList.add('dragging-arm');
+    const pivot = getTonearmPivot();
+    armStartAngle = getAngle(pivot, e.clientX, e.clientY);
+    // get current rotation
+    const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
+    armStartAngle -= m ? parseFloat(m[1]) : 18;
+  }
 
-document.addEventListener('mousemove', moveArm);
-document.addEventListener('touchmove', e => { if (armDragging) moveArm(e.touches[0]); }, { passive: true });
+  document.addEventListener('mousemove', moveArm);
 
-function moveArm(e) {
-  if (!armDragging) return;
-  const pivot = getTonearmPivot();
-  const angle = getAngle(pivot, e.clientX, e.clientY) - armStartAngle;
-  const clamped = clampArm(angle);
-  tonearm.style.transform = `rotate(${clamped}deg)`;
+  function moveArm(e) {
+    if (!armDragging) return;
+    const pivot = getTonearmPivot();
+    const angle = getAngle(pivot, e.clientX, e.clientY) - armStartAngle;
+    const clamped = clampArm(angle);
+    tonearm.style.transform = `rotate(${clamped}deg)`;
 
-  if (loadedSong !== null && checkArmOnRecord(clamped)) {
-    if (!isPlaying) {
-      tonearm.classList.add('on-record');
-      startAudio(loadedSong);
-      setNowPlaying(loadedSong);
-    }
-  } else {
-    if (isPlaying) {
-      stopAudio();
-      tonearm.classList.remove('on-record');
-      if (loadedSong !== null) {
-        clearNowPlaying();
+    if (loadedSong !== null && checkArmOnRecord(clamped)) {
+      if (!isPlaying) {
+        tonearm.classList.add('on-record');
+        startAudio(loadedSong);
+        setNowPlaying(loadedSong);
+      }
+    } else {
+      if (isPlaying) {
+        stopAudio(); // lifted off the record mid-drag; record stays loaded, just paused
+        tonearm.classList.remove('on-record');
       }
     }
   }
-}
 
-document.addEventListener('mouseup',  endArmDrag);
-document.addEventListener('touchend', endArmDrag);
+  document.addEventListener('mouseup', endArmDrag);
 
-function endArmDrag() {
-  if (!armDragging) return;
-  armDragging = false;
-  tonearm.classList.remove('dragging-arm');
-  // Snap: if close to on-record zone and record loaded, snap onto it
-  const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
-  const angle = m ? parseFloat(m[1]) : -25;
-  if (loadedSong !== null && checkArmOnRecord(angle)) {
-    tonearm.style.transform = 'rotate(-25deg)';
-    tonearm.classList.add('on-record');
-    if (!isPlaying) { startAudio(loadedSong); setNowPlaying(loadedSong); }
-  } else if (!checkArmOnRecord(angle)) {
-    tonearm.style.transition = 'transform .6s cubic-bezier(.34,1.56,.64,1)';
-    if (!isPlaying) {
-      tonearm.style.transform = 'rotate(18deg)';
-      tonearm.classList.remove('on-record');
+  function endArmDrag() {
+    if (!armDragging) return;
+    armDragging = false;
+    tonearm.classList.remove('dragging-arm');
+    // Snap: if close to on-record zone and record loaded, snap onto it
+    const m = tonearm.style.transform.match(/rotate\(([^)]+)deg\)/);
+    const angle = m ? parseFloat(m[1]) : -25;
+    if (loadedSong !== null && checkArmOnRecord(angle)) {
+      tonearm.style.transform = 'rotate(-25deg)';
+      tonearm.classList.add('on-record');
+      if (!isPlaying) { startAudio(loadedSong); setNowPlaying(loadedSong); }
+    } else if (!checkArmOnRecord(angle)) {
+      tonearm.style.transition = 'transform .6s cubic-bezier(.34,1.56,.64,1)';
+      if (!isPlaying) {
+        tonearm.style.transform = 'rotate(18deg)';
+        tonearm.classList.remove('on-record');
+      }
+      setTimeout(() => tonearm.style.transition = '', 700);
     }
-    setTimeout(() => tonearm.style.transition = '', 700);
   }
 }
 </script>

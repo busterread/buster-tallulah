@@ -876,7 +876,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const songs = [
   {
     title: 'Little Lady',
-    file: 'assets/little-lady-teaser.mp3',
+    teaserFile: 'assets/little-lady-teaser.m4a',
+    teaserType: 'audio/mp4',
+    // Switches automatically at 00:00 UK time on the release date below.
+    // TODO: once the mastered single is uploaded, replace this placeholder
+    // with its real filename — nothing else needs to change.
+    fullFile: 'assets/little-lady-FULL-TRACK-TBD.m4a',
+    fullType: 'audio/mp4',
+    releaseAtUK: { year: 2026, month: 10, day: 2, hour: 0, minute: 0 },
     label: '#8B2F3E',
     coverArt: 'assets/little-lady-coverart.jpeg',
     upcoming: true,
@@ -1068,13 +1075,49 @@ function stopAudio() {
   syncPowerSwitch();
 }
 
+/* True once it's on/after 00:00 on the given date, evaluated in UK wall-clock
+   time regardless of the visitor's own timezone. Built on Intl.DateTimeFormat
+   (not a fixed UTC offset) so BST/GMT is handled automatically. */
+function isPastUKTime({ year, month, day, hour, minute }) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).formatToParts(new Date());
+  const get = type => parseInt(parts.find(p => p.type === type).value, 10);
+  const asNumber = o => o.year * 1e8 + o.month * 1e6 + o.day * 1e4 + o.hour * 1e2 + o.minute;
+  const now = { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
+  return asNumber(now) >= asNumber({ year, month, day, hour, minute });
+}
+
+/* Little Lady plays the teaser until its UK release moment, then the full
+   track automatically — everything else about a song falls back to its
+   plain `file`/`type` fields (the two Coming Soon placeholders, which have
+   neither teaserFile/fullFile nor a release date). */
+function currentAudioSource(song) {
+  if (song.releaseAtUK && song.fullFile && isPastUKTime(song.releaseAtUK)) {
+    return { file: song.fullFile, type: song.fullType || 'audio/mp4' };
+  }
+  if (song.teaserFile) {
+    return { file: song.teaserFile, type: song.teaserType || 'audio/mp4' };
+  }
+  return { file: song.file, type: song.type || null };
+}
+
 function startAudio(songIdx) {
   stopAudio();
-  const file = songs[songIdx].file;
+  const song = songs[songIdx];
+  const { file, type } = currentAudioSource(song);
   const resolvedUrl = new URL(file, document.baseURI).href;
-  audioEl = new Audio(file);
+
+  audioEl = document.createElement('audio');
   audioEl.loop = true;
-  ttDebugLog('loading', resolvedUrl);
+  const source = document.createElement('source');
+  source.src = file;
+  if (type) source.type = type;
+  audioEl.appendChild(source);
+  audioEl.load();
+  ttDebugLog('loading', resolvedUrl, type || '');
 
   audioEl.addEventListener('error', () => {
     const err = audioEl.error;

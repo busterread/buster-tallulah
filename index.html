@@ -910,6 +910,9 @@ const songs = [
 let loadedSong   = null;
 let isPlaying    = false;
 let audioEl      = null;
+let crackleEl    = null;
+let playToken    = 0; // bumped on every stop/eject/new drop to invalidate stale async callbacks
+const CRACKLE_FILE = 'assets/MARS_NOISE_fx_vinyl_crackle_needle_drop_ripple.wav';
 const tonearm    = document.getElementById('tonearm');
 const ttDropzone = document.getElementById('ttDropzone');
 const vinylOnPlatter = document.getElementById('vinylOnPlatter');
@@ -1069,7 +1072,9 @@ function syncPowerSwitch() {
 }
 
 function stopAudio() {
+  playToken++; // invalidate any crackle->track handoff still in flight
   if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; }
+  if (crackleEl) { crackleEl.pause(); crackleEl = null; }
   isPlaying = false;
   vinylOnPlatter.classList.remove('playing');
   syncPowerSwitch();
@@ -1106,48 +1111,102 @@ function currentAudioSource(song) {
 
 function startAudio(songIdx) {
   stopAudio();
+  const myToken = playToken; // captured after stopAudio()'s bump, above
+
   const song = songs[songIdx];
   const { file, type } = currentAudioSource(song);
   const resolvedUrl = new URL(file, document.baseURI).href;
 
-  audioEl = document.createElement('audio');
-  audioEl.loop = true;
+  // Build the real track and "prime" it: play it muted, then pause the instant
+  // it actually starts, rewound to 0. That first play() happens synchronously
+  // in this same gesture, so it's never blocked — and because browsers only
+  // gate the *first* play() call on a given element, replaying the same
+  // (already-primed) element later via handOff() below doesn't need a fresh
+  // gesture either. This also doubles as "load the track in the background":
+  // priming forces it to actually start fetching/decoding right away.
+  const trackEl = document.createElement('audio');
+  trackEl.loop = true;
+  trackEl.muted = true;
   const source = document.createElement('source');
   source.src = file;
   if (type) source.type = type;
-  audioEl.appendChild(source);
-  audioEl.load();
+  trackEl.appendChild(source);
+  trackEl.load();
   ttDebugLog('loading', resolvedUrl, type || '');
 
-  audioEl.addEventListener('error', () => {
-    const err = audioEl.error;
+  trackEl.addEventListener('error', () => {
+    const err = trackEl.error;
     ttDebugLog('load error', resolvedUrl, err ? `MediaError code ${err.code}` : '(no MediaError set)');
   });
 
-  // The play() call itself must happen synchronously, in the same tick as the
-  // user gesture that triggered dropNeedle() — that part is unchanged below.
-  // Everything here just observes/reports the resulting promise; it doesn't
-  // delay or gate the call itself.
-  const playPromise = audioEl.play();
+  let crackleDone = false;
+  let trackPrimed = false;
 
-  isPlaying = true;
-  vinylOnPlatter.classList.add('playing');
-  syncPowerSwitch();
-
-  if (playPromise && typeof playPromise.then === 'function') {
-    playPromise.then(() => {
-      ttDebugLog('playing', resolvedUrl);
-    }).catch(err => {
-      // Autoplay was blocked (or the load failed) — undo the optimistic "playing"
-      // state so the UI doesn't lie about what's actually happening.
-      ttDebugLog('play() rejected —', err.name + ':', err.message || '(no message)');
-      isPlaying = false;
-      vinylOnPlatter.classList.remove('playing');
-      tonearm.classList.remove('on-record');
-      tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
-      syncPowerSwitch();
-    });
+  function handOff() {
+    if (myToken !== playToken) return; // superseded by a stop/eject/new drop
+    if (!crackleDone || !trackPrimed) return; // still waiting on one or the other — hold in silence, don't loop the crackle
+    audioEl = trackEl;
+    trackEl.muted = false;
+    trackEl.currentTime = 0;
+    const p = trackEl.play();
+    isPlaying = true;
+    vinylOnPlatter.classList.add('playing');
+    syncPowerSwitch();
+    if (p && typeof p.then === 'function') {
+      p.then(() => ttDebugLog('playing', resolvedUrl)).catch(err => {
+        if (myToken !== playToken) return;
+        ttDebugLog('play() rejected —', err.name + ':', err.message || '(no message)');
+        isPlaying = false;
+        vinylOnPlatter.classList.remove('playing');
+        tonearm.classList.remove('on-record');
+        tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
+        syncPowerSwitch();
+      });
+    }
   }
+
+  // Safety net: if priming's promise never settles at all (seen in this repo's own
+  // headless-Chromium testing, where the build lacks an AAC decoder and play()
+  // just hangs — real Safari/Chrome ship one and don't hit this), don't let the
+  // record spin in silence forever. Force the handoff attempt after a few
+  // seconds so the real play() call below gets a chance to surface its own
+  // concrete error.
+  const primeTimeout = setTimeout(() => {
+    if (myToken !== playToken || trackPrimed) return;
+    ttDebugLog('track still loading after 6s — attempting playback anyway');
+    trackPrimed = true;
+    handOff();
+  }, 6000);
+
+  const primePromise = trackEl.play();
+  Promise.resolve(primePromise).then(() => {
+    clearTimeout(primeTimeout);
+    if (myToken !== playToken) return;
+    trackEl.pause();
+    trackEl.currentTime = 0;
+    trackPrimed = true;
+    handOff();
+  }).catch(err => {
+    clearTimeout(primeTimeout);
+    ttDebugLog('track priming failed —', err.name || err);
+    trackPrimed = true; // don't block the handoff forever — try the real play() anyway
+    handOff();
+  });
+
+  // Needle-drop crackle: plays once (no loop), started synchronously in this
+  // same gesture so it's never blocked by autoplay policy either.
+  crackleEl = new Audio(CRACKLE_FILE);
+  crackleEl.loop = false;
+  crackleEl.addEventListener('ended', () => {
+    if (myToken !== playToken) return;
+    crackleDone = true;
+    handOff();
+  });
+  crackleEl.play().catch(err => {
+    ttDebugLog('crackle play() blocked —', err.name);
+    crackleDone = true; // don't let a blocked crackle hold up the track forever
+    handOff();
+  });
 }
 
 function loadRecord(songIdx) {

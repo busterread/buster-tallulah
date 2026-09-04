@@ -264,6 +264,8 @@ body.modal-open{overflow:hidden}
 .np-track.show{opacity:1}
 .np-sub{font-style:italic;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft);opacity:0;transition:opacity .4s .1s}
 .np-sub.show{opacity:1}
+.tt-debug{display:none;margin-top:10px;max-width:300px;font-style:italic;font-size:10px;line-height:1.4;color:rgba(232,201,122,.65);word-break:break-word}
+.tt-debug.show{display:block}
 
 /* Turntable power switch - vintage flip toggle mounted on the body */
 .tt-power{
@@ -638,6 +640,7 @@ section[id]{scroll-margin-top:64px}
         <div class="now-playing" id="nowPlaying">
           <div class="np-track" id="npTrack"></div>
           <div class="np-sub" id="npSub">A Buster &amp; Tallulah original</div>
+          <div class="tt-debug" id="ttDebug" aria-live="polite"></div>
         </div>
         <!-- Usage guide -->
         <div class="tt-guide" id="ttGuide">
@@ -914,8 +917,22 @@ const ARM_OFF_ANGLE = -25;
 const ARM_ON_ANGLE  = 18;
 
 /* Primary input is touch-like (phones/tablets) vs a precise mouse/trackpad.
-   Interaction model differs completely between the two, so decide once up front. */
-const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+   Interaction model differs completely between the two, so decide once up front.
+   pointer:coarse is the primary signal; the maxTouchPoints+hover:none check is a
+   fallback for devices (some tablets in particular) where that media feature has
+   been reported inconsistently. */
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches ||
+  (navigator.maxTouchPoints > 0 && window.matchMedia('(hover: none)').matches);
+
+/* On-screen debug output for the turntable's audio trigger, since phones/tablets
+   usually can't be inspected with devtools. Logs to console too. Safe to remove
+   once playback is confirmed working across real devices. */
+function ttDebugLog(...parts) {
+  const msg = parts.map(p => p instanceof Error ? `${p.name}: ${p.message}` : String(p)).join(' ');
+  console.log('[turntable]', msg);
+  const el = document.getElementById('ttDebug');
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
 
 /* ===== SONG INFO MODAL ===== */
 const songModalOverlay = document.getElementById('songModalOverlay');
@@ -1053,15 +1070,41 @@ function stopAudio() {
 
 function startAudio(songIdx) {
   stopAudio();
-  audioEl = new Audio(songs[songIdx].file);
+  const file = songs[songIdx].file;
+  const resolvedUrl = new URL(file, document.baseURI).href;
+  audioEl = new Audio(file);
   audioEl.loop = true;
+  ttDebugLog('loading', resolvedUrl);
+
   audioEl.addEventListener('error', () => {
-    console.error('Turntable audio failed to load:', songs[songIdx].file, audioEl.error);
+    const err = audioEl.error;
+    ttDebugLog('load error', resolvedUrl, err ? `MediaError code ${err.code}` : '(no MediaError set)');
   });
-  audioEl.play().catch(err => console.warn('Turntable playback was blocked:', err));
+
+  // The play() call itself must happen synchronously, in the same tick as the
+  // user gesture that triggered dropNeedle() — that part is unchanged below.
+  // Everything here just observes/reports the resulting promise; it doesn't
+  // delay or gate the call itself.
+  const playPromise = audioEl.play();
+
   isPlaying = true;
   vinylOnPlatter.classList.add('playing');
   syncPowerSwitch();
+
+  if (playPromise && typeof playPromise.then === 'function') {
+    playPromise.then(() => {
+      ttDebugLog('playing', resolvedUrl);
+    }).catch(err => {
+      // Autoplay was blocked (or the load failed) — undo the optimistic "playing"
+      // state so the UI doesn't lie about what's actually happening.
+      ttDebugLog('play() rejected —', err.name + ':', err.message || '(no message)');
+      isPlaying = false;
+      vinylOnPlatter.classList.remove('playing');
+      tonearm.classList.remove('on-record');
+      tonearm.style.transform = `rotate(${ARM_OFF_ANGLE}deg)`;
+      syncPowerSwitch();
+    });
+  }
 }
 
 function loadRecord(songIdx) {
@@ -1099,6 +1142,7 @@ function stopPlayback() {
 }
 
 function dropNeedle() {
+  ttDebugLog('needle tap detected, loadedSong=', loadedSong, 'isPlaying=', isPlaying);
   if (loadedSong === null || isPlaying) return;
   tonearm.style.transform = `rotate(${ARM_ON_ANGLE}deg)`;
   tonearm.classList.add('on-record');
@@ -1107,6 +1151,24 @@ function dropNeedle() {
 }
 
 ttPower.addEventListener('click', stopPlayback);
+
+/* Binds a single tap/click handler that fires on the FIRST of touchend/click to
+   reach it — touchend is the more direct, immediate signal for a real touch
+   gesture (and what Safari's autoplay policy actually keys off), click covers
+   mouse/keyboard and any device where touchend doesn't fire as expected. Guards
+   against the pair double-firing for the same physical tap. */
+function bindTap(el, handler) {
+  let firedAt = 0;
+  el.addEventListener('touchend', e => {
+    firedAt = Date.now();
+    e.preventDefault();
+    handler(e);
+  }, { passive: false });
+  el.addEventListener('click', e => {
+    if (Date.now() - firedAt < 800) return; // already handled via touchend
+    handler(e);
+  });
+}
 
 /* Match the on-screen instructions to how this device actually interacts with the turntable */
 (function setGuideCopy() {
@@ -1141,7 +1203,7 @@ if (isTouchDevice) {
     card.draggable = false;
     const idx = parseInt(card.dataset.song, 10);
     if (songs[idx].comingSoon) return;
-    card.addEventListener('click', () => {
+    bindTap(card, () => {
       if (loadedSong === idx) {
         ejectRecord();
       } else {
@@ -1211,7 +1273,7 @@ if (isTouchDevice) {
 /* ===== TONEARM INTERACTION ===== */
 if (isTouchDevice) {
   /* ===== TOUCH: tap the needle to drop it and start playback ===== */
-  tonearm.addEventListener('click', dropNeedle);
+  bindTap(tonearm, dropNeedle);
 } else {
   /* ===== POINTER: drag the needle onto the record to start playback ===== */
   let armDragging = false;

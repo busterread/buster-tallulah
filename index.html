@@ -271,6 +271,16 @@ body.modal-open{overflow:hidden}
   display:flex;flex-direction:column;align-items:center;gap:5px;
   background:none;border:none;padding:0;cursor:pointer;
 }
+.tt-power-led{
+  width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#4a1015,#280a0c);
+  box-shadow:inset 0 0 2px rgba(0,0,0,.8),0 0 0 1px rgba(0,0,0,.45);
+  transition:background .2s,box-shadow .2s;
+}
+.tt-power.on .tt-power-led{
+  background:radial-gradient(circle at 35% 30%,#ff6a5a,#b3170a);
+  box-shadow:0 0 7px 2px rgba(255,40,20,.8),0 0 2px rgba(255,190,160,.9),inset 0 0 2px rgba(0,0,0,.3);
+}
 .tt-power-plate{
   width:18px;height:32px;border-radius:4px;
   background:linear-gradient(180deg,#2a1c10,#120b06);
@@ -590,8 +600,9 @@ section[id]{scroll-margin-top:64px}
           <div class="tt-body"></div>
 
           <button class="tt-power" id="ttPower" type="button" aria-label="Turntable power switch — stops playback and lifts the needle" aria-pressed="false">
+            <span class="tt-power-led" aria-hidden="true"></span>
             <span class="tt-power-plate"><span class="tt-power-lever" aria-hidden="true"></span></span>
-            <span class="tt-power-label" aria-hidden="true">Power</span>
+            <span class="tt-power-label" aria-hidden="true">ON/OFF</span>
           </button>
 
           <div class="tt-platter" id="ttPlatter">

@@ -264,8 +264,6 @@ body.modal-open{overflow:hidden}
 .np-track.show{opacity:1}
 .np-sub{font-style:italic;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft);opacity:0;transition:opacity .4s .1s}
 .np-sub.show{opacity:1}
-.tt-debug{display:none;margin-top:10px;max-width:300px;font-style:italic;font-size:10px;line-height:1.4;color:rgba(232,201,122,.65);word-break:break-word}
-.tt-debug.show{display:block}
 
 /* Turntable power switch - vintage flip toggle mounted on the body */
 .tt-power{
@@ -640,7 +638,6 @@ section[id]{scroll-margin-top:64px}
         <div class="now-playing" id="nowPlaying">
           <div class="np-track" id="npTrack"></div>
           <div class="np-sub" id="npSub">A Buster &amp; Tallulah original</div>
-          <div class="tt-debug" id="ttDebug" aria-live="polite"></div>
         </div>
         <!-- Usage guide -->
         <div class="tt-guide" id="ttGuide">
@@ -934,14 +931,10 @@ const ARM_ON_ANGLE  = 18;
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches ||
   (navigator.maxTouchPoints > 0 && window.matchMedia('(hover: none)').matches);
 
-/* On-screen debug output for the turntable's audio trigger, since phones/tablets
-   usually can't be inspected with devtools. Logs to console too. Safe to remove
-   once playback is confirmed working across real devices. */
+/* Console-only diagnostics for the turntable's audio trigger. */
 function ttDebugLog(...parts) {
   const msg = parts.map(p => p instanceof Error ? `${p.name}: ${p.message}` : String(p)).join(' ');
   console.log('[turntable]', msg);
-  const el = document.getElementById('ttDebug');
-  if (el) { el.textContent = msg; el.classList.add('show'); }
 }
 
 /* ===== SONG INFO MODAL ===== */

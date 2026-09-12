@@ -404,7 +404,6 @@ section[id]{scroll-margin-top:64px}
   .profile-name{font-size:46px}
   .profile-info{left:24px;right:24px;bottom:28px}
   .matchbook{padding:36px 26px 32px}
-  #spotlightWrap{display:none}
   .vinyl-card{width:108px;height:108px}
   .vinyl-shelf{gap:14px}
   .tt-unit{max-width:300px}
@@ -804,14 +803,6 @@ const nav           = document.getElementById('nav');
 const progressBar   = document.getElementById('progressBar');
 const progressFill  = document.getElementById('progressFill');
 
-/* The hero photo switches to background-size:contain below this width (see the
-   @media(max-width:560px) rule on .hero-img) so it never crops either person out of
-   frame. The spotlight's circular reveal is only meant for the wide/cover-fit photo —
-   over a letterboxed one it shows the letterbox bars inside the circle. Keep the two
-   in sync with a live matchMedia listener rather than a one-time width check, so
-   resizing the window across the breakpoint (e.g. in devtools, without a reload)
-   can't leave the spotlight running against a now-letterboxed image underneath it. */
-const mobileHeroQuery = window.matchMedia('(max-width: 560px)');
 let spotProgress = 0;
 
 function onHeroScroll() {
@@ -837,30 +828,8 @@ function onHeroScroll() {
   spotlightWrap.style.visibility = spotProgress >= 1 ? 'hidden' : 'visible';
 }
 
-function enableSpotlight() {
-  spotlightWrap.style.display = '';
-  window.addEventListener('scroll', onHeroScroll, { passive: true });
-  onHeroScroll();
-}
-
-function disableSpotlight() {
-  window.removeEventListener('scroll', onHeroScroll);
-  spotlightWrap.style.display = 'none';
-  nav.classList.add('show');
-  progressBar.classList.add('show');
-  heroContent.classList.add('show');
-}
-
-function applySpotlightForViewport(e) {
-  if (e.matches) {
-    disableSpotlight();
-  } else {
-    enableSpotlight();
-  }
-}
-
-applySpotlightForViewport(mobileHeroQuery);
-mobileHeroQuery.addEventListener('change', applySpotlightForViewport);
+window.addEventListener('scroll', onHeroScroll, { passive: true });
+onHeroScroll();
 
 /* Progress bar */
 function updateProgress() {

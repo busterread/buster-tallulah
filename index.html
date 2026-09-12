@@ -88,6 +88,12 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .hero-meta .item{font-style:italic;font-size:12px;letter-spacing:.06em;color:var(--gold-soft);text-align:center}
 .hero-meta .item strong{display:block;font-style:normal;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(245,237,224,.48);margin-bottom:4px;font-weight:700}
 
+/* ===== ABOUT ===== */
+.about{background:#fff;padding:110px 32px}
+.about-inner{max-width:720px;margin:0 auto;text-align:center}
+.about-text{font-size:19px;line-height:1.85;color:var(--ink-soft)}
+.about-text em{font-style:italic;color:var(--wine)}
+
 /* ===== PROFILES ===== */
 .profiles{background:var(--ink);position:relative;overflow:hidden}
 .profiles-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
@@ -361,6 +367,7 @@ section[id]{scroll-margin-top:64px}
   .vinyl-card{width:140px;height:140px}
   .tt-unit{max-width:340px}
   .profile-plate{height:52vh;min-height:360px}
+  .about{padding:80px 24px}
   .turntable-section{padding:80px 24px 90px}
   .tt-header{margin-bottom:50px}
   .shows{padding:80px 0 80px}
@@ -382,6 +389,8 @@ section[id]{scroll-margin-top:64px}
   .hero-eyebrow::before,.hero-eyebrow::after{width:30px}
   .hero-meta{flex-direction:column;gap:12px;margin-top:28px;padding-top:22px}
   .hero-deco .line{width:60px}
+  .about{padding:64px 20px}
+  .about-text{font-size:16px;line-height:1.75}
   .profile-name{font-size:46px}
   .profile-info{left:24px;right:24px;bottom:28px}
   .matchbook{padding:36px 26px 32px}
@@ -468,6 +477,14 @@ section[id]{scroll-margin-top:64px}
     <div class="hero-meta">
       <div class="item"><strong>Out</strong>2026</div>
     </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner reveal">
+    <div class="section-label">Their Story</div>
+    <p class="about-text">Buster &amp; Tallulah met in Jamaica on a family holiday. Buster moved to London to be with Tilly while she finished film school, and the two of them pulled pints together in a Chelsea pub while chasing music. <em>&ldquo;Little Lady&rdquo;</em> was written while they were both coming out of breakups, and writing it together is what brought them together. It&rsquo;s their first release.</p>
   </div>
 </section>
 
@@ -844,7 +861,7 @@ function updateProgress() {
 window.addEventListener('scroll', updateProgress, { passive: true });
 
 /* Nav tone */
-const sections    = ['hero','duo','record','live','book'];
+const sections    = ['hero','about','duo','record','live','book'];
 const sectionEls  = sections.map(id => document.getElementById(id));
 const sectionTones = sectionEls.map(el => el && el.dataset.tone === 'dark' ? 'dark' : 'light');
 

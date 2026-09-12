@@ -98,7 +98,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .hero-meta .item strong{display:block;font-style:normal;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(245,237,224,.48);margin-bottom:4px;font-weight:700}
 
 /* ===== ABOUT ===== */
-.about{background:var(--ink);padding:110px 32px}
+.about{background:#000;padding:110px 32px}
 .about-inner{max-width:720px;margin:0 auto;text-align:center}
 .about-text{font-size:19px;line-height:1.85;color:rgba(245,237,224,.82)}
 .about-text em{font-style:italic;color:var(--gold-soft)}
@@ -319,28 +319,28 @@ body.modal-open{overflow:hidden}
 .np-hint{font-style:italic;font-size:12px;color:rgba(245,237,224,.32);letter-spacing:.08em}
 
 /* ===== SHOWS ===== */
-.shows{background:var(--paper);padding:100px 0 100px;position:relative}
+.shows{background:#000;padding:100px 0 100px;position:relative}
 .shows-inner{max-width:760px;margin:0 auto;padding:0 40px}
 .gig-grid{margin-top:36px}
-.gig{border-bottom:1px solid rgba(26,20,16,.11)}
-.gig:first-child{border-top:1px solid rgba(26,20,16,.11)}
+.gig{border-bottom:1px solid rgba(245,237,224,.14)}
+.gig:first-child{border-top:1px solid rgba(245,237,224,.14)}
 .gig.upcoming{display:flex;justify-content:space-between;align-items:baseline;padding:24px 0}
 .gig-head{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:20px;padding:24px 0;background:none;border:none;font:inherit;text-align:left;cursor:pointer;color:inherit}
 .gig-left{display:inline-flex;align-items:baseline;gap:12px}
-.gig-venue{font-weight:700;font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--ink)}
-.gig-status{font-style:italic;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--wine);opacity:.7}
+.gig-venue{font-weight:700;font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--cream)}
+.gig-status{font-style:italic;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);opacity:.85}
 .gig-right{display:inline-flex;align-items:center;gap:16px}
-.gig-detail{font-style:italic;font-size:13px;color:rgba(26,20,16,.45);letter-spacing:.06em}
+.gig-detail{font-style:italic;font-size:13px;color:rgba(245,237,224,.5);letter-spacing:.06em}
 .gig-chevron{width:8px;height:8px;flex:0 0 auto;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg);transition:transform .35s ease}
 .gig-head[aria-expanded="true"] .gig-chevron{transform:rotate(-135deg)}
 .gig-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
 .gig-panel-inner{overflow:hidden}
 .gig-head[aria-expanded="true"]+.gig-panel{grid-template-rows:1fr}
 .gig-panel-inner>*{display:block;padding-bottom:22px}
-.gig-lineup{font-style:italic;font-size:14px;color:var(--ink-soft);letter-spacing:.02em}
-.gig-date{font-style:italic;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-top:6px}
-.gig.upcoming .gig-venue{color:rgba(26,20,16,.35)}
-.gig.upcoming .gig-detail{font-style:italic;color:rgba(26,20,16,.28)}
+.gig-lineup{font-style:italic;font-size:14px;color:rgba(245,237,224,.82);letter-spacing:.02em}
+.gig-date{font-style:italic;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-soft);margin-top:6px}
+.gig.upcoming .gig-venue{color:rgba(245,237,224,.35)}
+.gig.upcoming .gig-detail{font-style:italic;color:rgba(245,237,224,.28)}
 
 /* ===== CONTACT ===== */
 .book{background:var(--ink);color:var(--cream);padding:90px 24px 80px;position:relative;overflow:hidden}
@@ -709,9 +709,9 @@ section[id]{scroll-margin-top:64px}
 </div>
 
 <!-- SHOWS -->
-<section class="shows" id="live">
+<section class="shows" id="live" data-tone="dark">
   <div class="shows-inner reveal">
-    <div class="section-label">Live</div>
+    <div class="section-label on-dark">Live</div>
     <div class="gig-grid">
       <div class="gig">
         <button class="gig-head" aria-expanded="false" aria-controls="gig-panel-0">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Buster &amp; Tallulah</title>
 <meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet.">
 <meta property="og:title" content="Buster &amp; Tallulah">
@@ -48,9 +48,9 @@ body::after{content:'';position:fixed;inset:-50%;pointer-events:none;z-index:90;
 @keyframes cueLine{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
 
 /* Nav */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;transition:background .35s,padding .3s,border-color .35s,opacity .5s;border-bottom:1px solid transparent;opacity:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(safe-area-inset-right)) 16px max(40px,env(safe-area-inset-left));display:flex;justify-content:space-between;align-items:center;transition:background .35s,padding .3s,border-color .35s,opacity .5s;border-bottom:1px solid transparent;opacity:0}
 nav.show{opacity:1}
-nav.on{background:rgba(245,237,224,.95);border-bottom-color:rgba(26,20,16,.11);backdrop-filter:blur(14px);padding:12px 40px}
+nav.on{background:rgba(245,237,224,.95);border-bottom-color:rgba(26,20,16,.11);backdrop-filter:blur(14px);padding-top:12px;padding-bottom:12px}
 nav.dark{background:rgba(26,20,16,.84);border-bottom-color:rgba(232,201,122,.11);backdrop-filter:blur(14px)}
 nav.dark .brand,nav.dark .nlinks a{color:var(--cream)}
 nav.dark .brand .amp{color:var(--gold-soft)}
@@ -370,7 +370,7 @@ body.modal-open{overflow:hidden}
 section[id]{scroll-margin-top:64px}
 
 @media(max-width:920px){
-  nav{padding:10px 20px}
+  nav{padding:10px max(20px,env(safe-area-inset-right)) 10px max(20px,env(safe-area-inset-left))}
   .nlinks{display:none}
   .tt-stage{grid-template-columns:1fr;gap:30px}
   .vinyl-shelf{flex-direction:row;justify-content:center;flex-wrap:wrap}

@@ -1017,6 +1017,17 @@ document.querySelectorAll('.vinyl-info').forEach(btn => {
     e.preventDefault();
     openSongModal(parseInt(btn.dataset.song, 10));
   });
+  /* The info button sits inside .vinyl-card, which binds its own touchend
+     handler (via bindTap, below) to load the record onto the turntable. A tap
+     on the button still bubbles that touchend up to the card, and the card's
+     preventDefault() on it suppresses the button's synthetic click entirely —
+     so on touch devices the tap loaded the record instead of opening the
+     modal. Stop the touchend here before it can reach the card. */
+  btn.addEventListener('touchend', e => {
+    e.stopPropagation();
+    e.preventDefault();
+    openSongModal(parseInt(btn.dataset.song, 10));
+  }, { passive: false });
 });
 
 songModalClose.addEventListener('click', closeSongModal);

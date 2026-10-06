@@ -6,8 +6,7 @@
 <title>Buster &amp; Tallulah</title>
 <meta name="description" content="Buster & Tallulah. A modern jazz-soul romantic duet.">
 <meta property="og:title" content="Buster &amp; Tallulah">
-<!-- TODO: update og:description after release day (Oct 2, 2026) — this is pre-release copy -->
-<meta property="og:description" content="Little Lady &mdash; out 2 October 2026">
+<meta property="og:description" content="Little Lady &mdash; out now">
 <meta property="og:url" content="https://busterandtallulah.com/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://busterandtallulah.com/assets/og-preview.png">
@@ -878,18 +877,10 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const songs = [
   {
     title: 'Little Lady',
-    teaserFile: 'assets/little-lady-teaser.m4a',
-    teaserType: 'audio/mp4',
-    // Switches automatically at 00:00 UK time on the release date below.
-    // TODO: once the mastered single is uploaded, replace this placeholder
-    // with its real filename — nothing else needs to change.
-    fullFile: 'assets/little-lady-FULL-TRACK-TBD.m4a',
-    fullType: 'audio/mp4',
-    releaseAtUK: { year: 2026, month: 10, day: 2, hour: 0, minute: 0 },
+    file: 'assets/little-lady.mp3',
+    type: 'audio/mpeg',
     label: '#8B2F3E',
     coverArt: 'assets/little-lady-coverart.jpeg',
-    upcoming: true,
-    releaseDate: 'October 2, 2026', // remove once live
     producer: 'Sam Grade',
     studio: 'Yellow Door Studios',
     mastering: 'AIR Studios',
@@ -977,7 +968,6 @@ function openSongModal(songIdx) {
     songModalTitle.textContent = s.title;
 
     const fields = [];
-    if (s.upcoming) fields.push(['Release Date', s.releaseDate || 'TBC']);
     if (s.artists)  fields.push(['Other Artists', s.artists]);
     fields.push(['Producer', s.producer || 'TBC']);
     fields.push(['Production Studio', s.studio || 'TBC']);
@@ -989,7 +979,7 @@ function openSongModal(songIdx) {
 
     if (s.presave) {
       songModalPresave.href = s.presave;
-      songModalPresave.textContent = 'Pre-Save / Pre-Order';
+      songModalPresave.textContent = 'Listen';
       songModalPresave.classList.remove('disabled');
       songModalPresave.removeAttribute('aria-disabled');
       songModalPresave.removeAttribute('tabindex');
@@ -1089,41 +1079,12 @@ function stopAudio() {
   syncPowerSwitch();
 }
 
-/* True once it's on/after 00:00 on the given date, evaluated in UK wall-clock
-   time regardless of the visitor's own timezone. Built on Intl.DateTimeFormat
-   (not a fixed UTC offset) so BST/GMT is handled automatically. */
-function isPastUKTime({ year, month, day, hour, minute }) {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/London',
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', hour12: false,
-  }).formatToParts(new Date());
-  const get = type => parseInt(parts.find(p => p.type === type).value, 10);
-  const asNumber = o => o.year * 1e8 + o.month * 1e6 + o.day * 1e4 + o.hour * 1e2 + o.minute;
-  const now = { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
-  return asNumber(now) >= asNumber({ year, month, day, hour, minute });
-}
-
-/* Little Lady plays the teaser until its UK release moment, then the full
-   track automatically — everything else about a song falls back to its
-   plain `file`/`type` fields (the two Coming Soon placeholders, which have
-   neither teaserFile/fullFile nor a release date). */
-function currentAudioSource(song) {
-  if (song.releaseAtUK && song.fullFile && isPastUKTime(song.releaseAtUK)) {
-    return { file: song.fullFile, type: song.fullType || 'audio/mp4' };
-  }
-  if (song.teaserFile) {
-    return { file: song.teaserFile, type: song.teaserType || 'audio/mp4' };
-  }
-  return { file: song.file, type: song.type || null };
-}
-
 function startAudio(songIdx) {
   stopAudio();
   const myToken = playToken; // captured after stopAudio()'s bump, above
 
   const song = songs[songIdx];
-  const { file, type } = currentAudioSource(song);
+  const { file, type } = song;
   const resolvedUrl = new URL(file, document.baseURI).href;
 
   // Build the real track and "prime" it: play it muted, then pause the instant
@@ -1134,7 +1095,7 @@ function startAudio(songIdx) {
   // gesture either. This also doubles as "load the track in the background":
   // priming forces it to actually start fetching/decoding right away.
   const trackEl = document.createElement('audio');
-  trackEl.loop = true;
+  trackEl.loop = false;
   trackEl.muted = true;
   const source = document.createElement('source');
   source.src = file;
@@ -1146,6 +1107,13 @@ function startAudio(songIdx) {
   trackEl.addEventListener('error', () => {
     const err = trackEl.error;
     ttDebugLog('load error', resolvedUrl, err ? `MediaError code ${err.code}` : '(no MediaError set)');
+  });
+
+  // When the track finishes naturally, lift the needle the same way the
+  // ON/OFF switch does rather than looping or going silent on a dead record.
+  trackEl.addEventListener('ended', () => {
+    if (myToken !== playToken) return;
+    stopPlayback();
   });
 
   let crackleDone = false;

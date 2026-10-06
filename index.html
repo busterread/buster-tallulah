@@ -26,6 +26,7 @@
   --ink:#1A1410;
   --ink-soft:#2c2218;
   --cream:#F5EDE0;
+  --vinyl-announced-opacity: .625; /* "Coming Soon" record with a revealed title, between blank (.3) and live (1) */
 }
 html{scroll-behavior:smooth}
 body{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:1.55;font-size:18px;background:var(--paper);overflow-x:hidden}
@@ -135,6 +136,7 @@ nav.dark .brand .amp{color:var(--gold-soft)}
 .vinyl-card.dragging{opacity:0.3;transform:scale(0.9)}
 .vinyl-card.used{opacity:0.2;pointer-events:none}
 .vinyl-card.coming-soon{opacity:0.3;pointer-events:none;cursor:default}
+.vinyl-card.announced{opacity:var(--vinyl-announced-opacity)}
 
 .vinyl-sleeve{
   position:absolute;inset:0;background:linear-gradient(155deg,#2a1015,#0a0606 75%) center/cover no-repeat;
@@ -560,8 +562,8 @@ section[id]{scroll-margin-top:64px}
         </div>
 
         <!-- Song 2 -->
-        <div class="vinyl-card coming-soon" id="vinyl-1" draggable="false" data-song="1">
-          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Upcoming track info"><span aria-hidden="true">i</span></button>
+        <div class="vinyl-card coming-soon announced" id="vinyl-1" draggable="false" data-song="1">
+          <button class="vinyl-info" type="button" data-song="1" aria-haspopup="dialog" aria-label="Carry Me Home track info"><span aria-hidden="true">i</span></button>
           <div class="vinyl-sleeve"></div>
           <div class="vinyl-disc">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -581,9 +583,9 @@ section[id]{scroll-margin-top:64px}
               <circle cx="100" cy="100" r="34" fill="#6B1D2A"/>
               <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1"/>
               <circle cx="100" cy="100" r="5" fill="#1A1410"/>
-              <text x="100" y="96" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Coming</text>
-              <text x="100" y="108" text-anchor="middle" fill="#E8C97A" font-size="7.5" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing=".5">Soon</text>
-              <text x="100" y="120" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">B &amp; T</text>
+              <text x="100" y="93" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Carry</text>
+              <text x="100" y="104" text-anchor="middle" fill="#E8C97A" font-size="9" font-family="Georgia,serif" font-style="italic" font-weight="700" letter-spacing="1">Me Home</text>
+              <text x="100" y="116" text-anchor="middle" fill="rgba(232,201,122,.6)" font-size="6" font-family="Georgia,serif" font-style="italic">Coming Soon</text>
               <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity=".04" transform="rotate(-30 70 60)"/>
             </svg>
           </div>
@@ -891,6 +893,7 @@ const songs = [
     file: 'assets/carry-me-home.mp3',
     label: '#6B1D2A',
     comingSoon: true,
+    announced: true,
   },
   {
     title: 'My Devotion',
@@ -949,13 +952,21 @@ function openSongModal(songIdx) {
   songModalBg.style.backgroundImage = s.coverArt ? `url('${s.coverArt}')` : 'none';
 
   if (s.comingSoon) {
-    songModalEyebrow.style.display = 'none';
-    songModalTitle.style.display = 'none';
     songModalFields.style.display = 'none';
     songModalPresave.style.display = 'none';
     songModalSoon.style.display = 'block';
-    songModal.setAttribute('aria-label', 'Coming soon');
     songModal.removeAttribute('aria-labelledby');
+
+    if (s.announced) {
+      songModalEyebrow.style.display = 'none';
+      songModalTitle.style.display = '';
+      songModalTitle.textContent = s.title;
+      songModal.setAttribute('aria-label', `${s.title} — coming soon`);
+    } else {
+      songModalEyebrow.style.display = 'none';
+      songModalTitle.style.display = 'none';
+      songModal.setAttribute('aria-label', 'Coming soon');
+    }
   } else {
     songModalEyebrow.style.display = '';
     songModalTitle.style.display = '';

@@ -36,7 +36,7 @@ const PRODUCTS = [
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
-    name: 'The Buster & Tallulah Vinyl Tote',
+    name: 'The Little Lady Vinyl Tote',
     price: 15,
     images: [
       '/assets/buster-tallulah-tote-front.jpg', // placeholder photo — not the final product shot

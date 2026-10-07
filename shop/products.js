@@ -22,7 +22,7 @@ const PRODUCTS = [
   {
     name: 'The Little Lady Runaway Tee',
     price: 16,
-    image: '/assets/shop-placeholder.svg',
+    image: '/assets/little-lady-runaway-tee.png', // placeholder photo — not the final product shot
     description: 'Soft cotton tee printed with the Little Lady runaway artwork.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },

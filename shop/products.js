@@ -15,7 +15,7 @@ const PRODUCTS = [
   {
     name: 'The Little Lady Matchbox Tee',
     price: 28,
-    image: '/assets/shop-placeholder.svg',
+    image: '/assets/little-lady-matchbox-tee.png', // placeholder photo — not the final product shot
     description: 'Soft cotton tee printed with the Little Lady matchbook artwork.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },

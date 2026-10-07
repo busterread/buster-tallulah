@@ -13,21 +13,21 @@
    once the real Etsy listings and product photos are ready. */
 const PRODUCTS = [
   {
-    name: 'Little Lady Cover Art Tee',
+    name: 'The Little Lady Matchbox Tee',
     price: 28,
     image: '/assets/shop-placeholder.svg',
     description: 'Soft cotton tee printed with the Little Lady cover art.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
-    name: 'Buster & Tallulah Tote Bag',
+    name: 'The Little Lady Runaway Tee',
     price: 16,
     image: '/assets/shop-placeholder.svg',
     description: 'Canvas tote bag with the Buster & Tallulah wordmark.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
-    name: 'Buster & Tallulah Mug',
+    name: 'The Buster & Tallulah Tote',
     price: 14,
     image: '/assets/shop-placeholder.svg',
     description: "Ceramic mug featuring the duo's gold wordmark.",

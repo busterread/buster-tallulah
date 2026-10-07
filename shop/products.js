@@ -27,13 +27,16 @@ const PRODUCTS = [
   },
   {
     name: 'The Little Lady Runaway Tee',
-    price: 16,
-    image: '/assets/little-lady-runaway-tee.png', // placeholder photo — not the final product shot
+    price: 25,
+    images: [
+      '/assets/little-lady-runaway-tee-front.jpg', // placeholder photo — not the final product shot
+      '/assets/little-lady-runaway-tee-back.jpg', // placeholder photo — not the final product shot
+    ],
     description: 'Soft cotton tee printed with the Little Lady runaway artwork.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
-    name: 'The Buster & Tallulah Tote',
+    name: 'The Buster & Tallulah Vinyl Tote',
     price: 15,
     images: [
       '/assets/buster-tallulah-tote-front.jpg', // placeholder photo — not the final product shot

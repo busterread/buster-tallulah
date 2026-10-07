@@ -46,14 +46,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
 .nticket::after{content:'';position:absolute;inset:3px;border:1px solid rgba(232,201,122,.28);pointer-events:none}
 .nticket:hover{background:var(--rose)}
 
-/* ===== SECTION LABEL — same eyebrow style used throughout the site ===== */
-.section-label{display:inline-flex;align-items:center;gap:16px;font-style:italic;font-size:11px;letter-spacing:.38em;text-transform:uppercase;font-weight:700;color:var(--gold-soft);margin-bottom:28px}
-.section-label::before,.section-label::after{content:'';width:26px;height:1px;background:currentColor}
-
 /* ===== SHOP HEADER ===== */
 .shop-hero{padding:150px 32px 70px;text-align:center;background:var(--ink)}
-.shop-hero h1{font-weight:700;font-style:italic;font-size:clamp(36px,5.5vw,60px);line-height:1.05;color:var(--cream)}
-.shop-hero h1 em{font-style:italic;color:var(--gold-soft)}
+.shop-hero h1{display:flex;flex-direction:column;align-items:center;gap:10px}
+.shop-title-pre,.shop-title-sub{font-style:italic;font-size:16px;letter-spacing:.44em;text-transform:uppercase;font-weight:700;color:var(--gold-soft)}
+.shop-title-main{font-weight:700;font-style:italic;font-size:clamp(44px,7vw,76px);line-height:1.05;color:var(--cream)}
+.shop-title-main em{font-style:italic;color:var(--gold-soft)}
 .shop-hero p{margin-top:18px;font-style:italic;font-size:15px;color:rgba(245,237,224,.6);max-width:520px;margin-left:auto;margin-right:auto}
 
 /* ===== PRODUCT GRID ===== */
@@ -115,8 +113,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
 
 <!-- SHOP HEADER -->
 <section class="shop-hero">
-  <div class="section-label">Merch</div>
-  <h1>The Buster <em>&amp;</em> Tallulah Clothing Co.</h1>
+  <h1>
+    <span class="shop-title-pre">The</span>
+    <span class="shop-title-main">Buster <em>&amp;</em> Tallulah</span>
+    <span class="shop-title-sub">Clothing Co.</span>
+  </h1>
   <p>Official merch, printed and shipped on demand. Browse below and complete your order on Etsy.</p>
 </section>
 

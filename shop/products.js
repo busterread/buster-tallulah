@@ -29,7 +29,7 @@ const PRODUCTS = [
   {
     name: 'The Buster & Tallulah Tote',
     price: 14,
-    image: '/assets/shop-placeholder.svg',
+    image: '/assets/buster-tallulah-tote.png', // placeholder photo — not the final product shot
     description: 'Canvas tote bag with the Buster & Tallulah wordmark.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },

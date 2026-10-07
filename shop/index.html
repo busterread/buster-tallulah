@@ -62,7 +62,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
 .shop-grid-section::after{content:'';position:absolute;inset:16px;border:1px solid rgba(74,16,25,.22);pointer-events:none;z-index:1}
 .shop-grid-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto}
 .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
-.product-card{background:var(--wine);border:1px solid rgba(232,201,122,.35);display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.product-card{background:var(--wine);border:1px solid rgba(232,201,122,.35);display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.35);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(0,0,0,.45)}
 .product-gallery{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--wine-deep)}
 .product-gallery-track{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .product-gallery-track::-webkit-scrollbar{display:none}
@@ -76,6 +77,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
 .product-desc{margin-top:12px;font-size:14px;line-height:1.6;color:rgba(245,237,224,.78);flex:1}
 .product-buy{margin-top:20px;align-self:flex-start;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--cream);background:transparent;padding:12px 24px;text-decoration:none;border:1px solid var(--gold);transition:background .25s,color .25s}
 .product-buy:hover{background:var(--gold);color:var(--ink)}
+
+/* ===== PRODUCT QUICK-VIEW MODAL ===== */
+.product-modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(10,4,7,.84);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.product-modal-overlay.open{opacity:1;pointer-events:auto}
+.product-modal{position:relative;width:min(1100px,92vw);height:min(680px,86vh);display:grid;grid-template-columns:1.2fr 1fr;background:var(--wine);border:1px solid var(--wine-deep);box-shadow:0 40px 90px rgba(0,0,0,.65);transform:translateY(18px) scale(.97);transition:transform .35s ease;overflow:hidden}
+.product-modal-overlay.open .product-modal{transform:translateY(0) scale(1)}
+.product-modal-close{position:absolute;top:14px;right:14px;z-index:6;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,201,122,.45);background:rgba(26,20,16,.45);color:var(--gold-soft);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.product-modal-close:hover{background:rgba(26,20,16,.75)}
+.product-modal-gallery{position:relative;background:var(--wine-deep);aspect-ratio:auto;width:100%;height:100%;min-height:0;min-width:0}
+.product-modal-gallery .product-gallery-track{height:100%}
+.product-modal-details{padding:48px 44px;display:flex;flex-direction:column;overflow-y:auto;text-align:left;min-width:0}
+.product-modal-details .product-name{font-size:30px}
+.product-modal-details .product-price{font-size:18px;margin-top:10px}
+.product-modal-details .product-desc{font-size:15px;margin-top:20px;flex:none}
+.product-modal-details .product-buy{margin-top:30px;align-self:flex-start}
+body.shop-modal-open{overflow:hidden}
 
 /* ===== SHOP NOTE ===== */
 .shop-note{margin-top:46px;text-align:center;font-style:italic;font-size:13px;color:rgba(26,20,16,.55);letter-spacing:.04em}
@@ -91,6 +108,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
   nav{padding:10px max(20px,env(safe-area-inset-right)) 10px max(20px,env(safe-area-inset-left))}
   .nlinks{display:none}
   .shop-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:720px){
+  .product-modal{grid-template-columns:1fr;grid-auto-rows:min-content;height:auto;max-height:92vh;overflow-y:auto}
+  .product-modal-gallery{aspect-ratio:1/1;height:auto}
+  .product-modal-details{padding:30px 24px 34px}
 }
 
 @media(max-width:560px){
@@ -140,35 +163,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px max(40px,env(sa
   <div class="footer-credit">&copy; 2026 Buster &amp; Tallulah &middot; <a href="/">Back to site</a></div>
 </footer>
 
-<script src="products.js"></script>
-<script>
-/* Render the product grid from PRODUCTS (see products.js). No cart, no
-   payment code — each card just links out to its Etsy listing. A product
-   with multiple `images` gets a one-at-a-time scrollable gallery (with
-   dots); one with a single `image` just shows that photo. */
-const shopGrid = document.getElementById('shopGrid');
-shopGrid.innerHTML = PRODUCTS.map(p => {
-  const images = p.images || [p.image];
-  return `
-  <div class="product-card">
-    <div class="product-gallery">
-      <div class="product-gallery-track">
-        ${images.map(src => `<img src="${src}" alt="${p.name}" loading="lazy">`).join('')}
-      </div>
-      ${images.length > 1 ? `<div class="product-gallery-dots">${images.map((_, i) => `<button class="product-gallery-dot${i === 0 ? ' active' : ''}" type="button" aria-label="Photo ${i + 1} of ${images.length}"></button>`).join('')}</div>` : ''}
-    </div>
-    <div class="product-body">
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">&pound;${p.price}</div>
-      <div class="product-desc">${p.description}</div>
-      <a class="product-buy" href="${p.etsyUrl}" target="_blank" rel="noopener noreferrer">Buy on Etsy</a>
+<!-- PRODUCT QUICK-VIEW MODAL -->
+<div class="product-modal-overlay" id="productModalOverlay">
+  <div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalName">
+    <button class="product-modal-close" id="productModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="product-gallery product-modal-gallery" id="productModalGallery"></div>
+    <div class="product-modal-details">
+      <div class="product-name" id="productModalName"></div>
+      <div class="product-price" id="productModalPrice"></div>
+      <div class="product-desc" id="productModalDesc"></div>
+      <a class="product-buy" id="productModalBuy" target="_blank" rel="noopener noreferrer">Buy on Etsy</a>
     </div>
   </div>
-`;
-}).join('');
+</div>
 
-/* Sync each gallery's dots to whichever photo is currently scrolled into view. */
-document.querySelectorAll('.product-gallery').forEach(gallery => {
+<script src="products.js"></script>
+<script>
+/* Gallery markup/wiring shared between the grid cards and the quick-view
+   modal below. A product with multiple `images` gets a one-at-a-time
+   scrollable gallery (with dots); one with a single `image` just shows
+   that photo. */
+function galleryMarkup(images, name) {
+  return `
+    <div class="product-gallery-track">
+      ${images.map(src => `<img src="${src}" alt="${name}" loading="lazy">`).join('')}
+    </div>
+    ${images.length > 1 ? `<div class="product-gallery-dots">${images.map((_, i) => `<button class="product-gallery-dot${i === 0 ? ' active' : ''}" type="button" aria-label="Photo ${i + 1} of ${images.length}"></button>`).join('')}</div>` : ''}
+  `;
+}
+
+/* Sync a gallery's dots to whichever photo is currently scrolled into view. */
+function wireGallery(gallery) {
   const track = gallery.querySelector('.product-gallery-track');
   const dots = gallery.querySelectorAll('.product-gallery-dot');
   if (dots.length < 2) return;
@@ -179,6 +204,69 @@ document.querySelectorAll('.product-gallery').forEach(gallery => {
   dots.forEach((d, i) => {
     d.addEventListener('click', () => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }));
   });
+}
+
+/* Render the product grid from PRODUCTS (see products.js). No cart, no
+   payment code — each card just links out to its Etsy listing. Clicking a
+   card (but not its Buy button or gallery dots) opens the quick-view modal. */
+const shopGrid = document.getElementById('shopGrid');
+shopGrid.innerHTML = PRODUCTS.map((p, i) => {
+  const images = p.images || [p.image];
+  return `
+  <div class="product-card" data-index="${i}">
+    <div class="product-gallery">${galleryMarkup(images, p.name)}</div>
+    <div class="product-body">
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">&pound;${p.price}</div>
+      <div class="product-desc">${p.description}</div>
+      <a class="product-buy" href="${p.etsyUrl}" target="_blank" rel="noopener noreferrer">Buy on Etsy</a>
+    </div>
+  </div>
+`;
+}).join('');
+
+document.querySelectorAll('.product-gallery').forEach(wireGallery);
+
+/* ===== PRODUCT QUICK-VIEW MODAL ===== */
+const productModalOverlay = document.getElementById('productModalOverlay');
+const productModalGallery = document.getElementById('productModalGallery');
+const productModalName    = document.getElementById('productModalName');
+const productModalPrice   = document.getElementById('productModalPrice');
+const productModalDesc    = document.getElementById('productModalDesc');
+const productModalBuy     = document.getElementById('productModalBuy');
+const productModalClose   = document.getElementById('productModalClose');
+
+function openProductModal(index) {
+  const p = PRODUCTS[index];
+  const images = p.images || [p.image];
+  productModalGallery.innerHTML = galleryMarkup(images, p.name);
+  wireGallery(productModalGallery);
+  productModalName.textContent = p.name;
+  productModalPrice.textContent = '£' + p.price;
+  productModalDesc.textContent = p.description;
+  productModalBuy.href = p.etsyUrl;
+  productModalOverlay.classList.add('open');
+  document.body.classList.add('shop-modal-open');
+}
+
+function closeProductModal() {
+  productModalOverlay.classList.remove('open');
+  document.body.classList.remove('shop-modal-open');
+}
+
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('click', e => {
+    if (e.target.closest('.product-buy') || e.target.closest('.product-gallery-dot')) return;
+    openProductModal(parseInt(card.dataset.index, 10));
+  });
+});
+
+productModalClose.addEventListener('click', closeProductModal);
+productModalOverlay.addEventListener('click', e => {
+  if (e.target === productModalOverlay) closeProductModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && productModalOverlay.classList.contains('open')) closeProductModal();
 });
 </script>
 

@@ -16,21 +16,21 @@ const PRODUCTS = [
     name: 'The Little Lady Matchbox Tee',
     price: 28,
     image: '/assets/shop-placeholder.svg',
-    description: 'Soft cotton tee printed with the Little Lady cover art.',
+    description: 'Soft cotton tee printed with the Little Lady matchbook artwork.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
     name: 'The Little Lady Runaway Tee',
     price: 16,
     image: '/assets/shop-placeholder.svg',
-    description: 'Canvas tote bag with the Buster & Tallulah wordmark.',
+    description: 'Soft cotton tee printed with the Little Lady runaway artwork.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
   {
     name: 'The Buster & Tallulah Tote',
     price: 14,
     image: '/assets/shop-placeholder.svg',
-    description: "Ceramic mug featuring the duo's gold wordmark.",
+    description: 'Canvas tote bag with the Buster & Tallulah wordmark.',
     etsyUrl: '#', // TODO: replace with the real Etsy listing URL for this product
   },
 ];
